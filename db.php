@@ -4,7 +4,7 @@
 const DBHOST = "localhost";
 const DBUSER = "root";
 const DBPASS = "";
-const DBNAME = "cmsv1";
+const DBNAME = "cms_bdd";
 
 // On crée notre DSN de connection (DSN = Data Source Name)
 $dsn = "mysql:dbname=".DBNAME.";host=".DBHOST;

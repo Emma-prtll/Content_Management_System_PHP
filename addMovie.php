@@ -7,42 +7,31 @@ if(!isset($_SESSION["user"])) {
     header("Location: index.php");
 }
 
-    //On vérifie si on reçoit un ID de la part de movie.php
-    if (!isset($_GET['id']) || empty($_GET['id'])) {
-        //ICI je n'ai pas d'ID, je redirige vers movie.php
-        header('Location: movie.php');
-        exit();
-    }
+//On se connect à la BDD
+require_once "db.php";
 
-    //On stock l'id du post qu'on souhaite afficher
-    $movie_id = $_GET['id'];
+$sql = "SELECT * FROM genre";
+$req = $db->query($sql);
+$genres = $req->fetchAll();
 
 //On traite le formulaire
 if(!empty($_POST)) {
-    if(isset($_POST["title"], $_POST["content"], $_POST["rate"]) && !empty($_POST["title"]) && !empty($_POST["content"]) && !empty($_POST["rate"])){
+    if(isset($_POST["name"], $_POST["date"], $_POST["director"]) && !empty($_POST["name"]) && !empty($_POST["date"]) && !empty($_POST["director"])){
         //Ici, le formulaire est rempli. Titre et contenu ne sont pas vide
 
         //On récupère les infos et on les protège
-        $postTitle = strip_tags($_POST['title']);
-        $postContent = strip_tags($_POST['content']);
-        $postRate = strip_tags($_POST['rate']);
-        $postAuthor = $_SESSION["user"]["id"];
-
-
-        //On peut enregistrer les données en BDD
-        //On se connect à la BDD
-        require_once "db.php";
-
+        $movieName = strip_tags($_POST['name']);
+        $movieDate = strip_tags($_POST['date']);
+        $movieDirector = strip_tags($_POST['director']);
+        $movieAuthor = $_SESSION["user"]["id"];
+      
         //Requête SQL préparée car ces données viennent du user (POST = requête préparée)
-        $sql = "INSERT INTO `posts` (`comment`, `rate`, `title`, `author`, `movie_id`) VALUES (:comment, :rate, :title, :author, :movie_id)";
-        //On prépare la requête
+        $sql = "INSERT INTO `movie` (`movie_name`, `movie_date`, `movie_director`, `movieUser_id`) VALUES (:name, :date, :director, :movieUser)";
         $req = $db->prepare($sql);
-        //On bind les values
-        $req->bindValue(":comment", $postContent, PDO::PARAM_STR);
-        $req->bindValue(":rate", $postRate, PDO::PARAM_INT);
-        $req->bindValue(":title", $postTitle, PDO::PARAM_STR);
-        $req->bindValue(":author", $postAuthor, PDO::PARAM_INT);
-        $req->bindValue(":movie_id", $movie_id, PDO::PARAM_INT);
+        $req->bindValue(":name", $movieName, PDO::PARAM_STR);
+        $req->bindValue(":date", $movieDate, PDO::PARAM_STR);
+        $req->bindValue(":director", $movieDirector, PDO::PARAM_STR);
+        $req->bindValue(":movieUser", $movieAuthor, PDO::PARAM_INT);
         //On exécute la requête qui est protégée
         if(!$req->execute()){
             die("Une erreur est survenue dans l'envoie du formulaire");
@@ -55,9 +44,6 @@ if(!empty($_POST)) {
         $message = urlencode("Bravo, votre nouvel article a bien été créé.");
         header("Location: blog.php?message=".$message);
                 //die("Votre article à bien été ajouté avec l'ID $id ! ");
-
-
-
 
     } else {
         //Ici, soit le formulaire est vide, soit le champ titre ou contenu est vide
@@ -76,29 +62,40 @@ include "components/nav.php";
 
 ?>
 
-<section class="section is-flex is-flex-direction-column is-justify-content-center">
+<section class="section is-flex is-flex-direction-column is-justify-content-center" style="width: 80%">
     <form method="post">
         <div class="field">
-            <label class="label" for="title">
-                Titre
-            </label>
+            <label class="label" for="name">Nom</label>
             <div class="control">
-                <input type="text" class="input" name="title" placeholder="Le titre de l'article ">
+                <input type="text" class="input" name="name" placeholder="Le nom du film">
             </div>      
         </div>
         
         <div class="field">
-            <label class="label" for="content">
-                Contenu
+            <label class="label" for="date">
+                Date de sortie
             </label>
             <div class="control">
-                <textarea name="content" class="textarea" placeholder="Contenu de l'article "></textarea>
+                <input name="date" class="input" type="date" placeholder="La date de sortie du film"></input>
             </div>             
         </div>
 
         <div class="field">
-            <label for="rate">Note du film :</label>
-            <input type="number" id="rate" name="rate" min="0" max="10" />            
+            <label class="label" for="director">Réalisateur.trice</label>
+            <div class="control">
+                <input type="text" class="input" name="director" placeholder="Qui a réalisé le film">
+            </div>      
+        </div>
+
+        <div class="field is-grouped is-grouped-multiline">
+            <label class="label" for="genre">Genre du film</label>
+            <?php foreach ($genres as $genre): ?>
+                <p class="control">
+                    <button class="button">
+                        <?= htmlspecialchars($genre->genre) ?>
+                    </button>
+                </p>        
+            <?php endforeach; ?>
         </div>
 
         <div class="control">

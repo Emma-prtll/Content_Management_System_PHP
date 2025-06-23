@@ -14,7 +14,7 @@
     //On stock l'id du post qu'on souhaite afficher
     $id = $_GET['id'];
 
-    //On prépare la requête pour récupérer le post
+    //On prépare la requête pour récupérer le film
     $sql = "SELECT * FROM `movie` WHERE `movie_id` = ?";
     $req = $db->prepare($sql);
     $req->bindValue(1, $id, PDO::PARAM_INT);
@@ -26,15 +26,26 @@
     $req = $db->prepare($sql);
     $req->bindValue(1, $id, PDO::PARAM_INT);
     $req->execute();
-    $posts = $req->fetch();
+    // $posts = $req->fetch();
+    $posts = $req->fetchAll(PDO::FETCH_OBJ);  
 
-    //On va chercher le user auteur du post
-    $user_id = $_SESSION["user"]["id"];
-    $sql_user = "SELECT * FROM `posts` WHERE author = $user_id" ;
-    $req = $db->query($sql_user);
-    $user = $req->fetch();
+    // //On va chercher le user auteur du post
+    // $user_id = $_SESSION["user"]["id"];
+    // $sql_user = "SELECT * FROM `posts` WHERE author = $user_id" ;
+    // $req = $db->query($sql_user);
+    // $user = $req->fetch();
 
+// $postAuthor = $_SESSION["user"]["id"];
 
+    //Selectionner et calculer la moyenne des notes et le nombre de note donnée au film
+    $sql = "SELECT AVG(rate) AS average_rate, COUNT(rate) AS rate_count FROM posts WHERE movie_id = ?";
+    $req = $db->prepare($sql);
+    $req->bindValue(1, $id, PDO::PARAM_INT);
+    $req->execute();
+    $result = $req->fetch();
+
+    $average = $result->average_rate;
+    $count = $result->rate_count;
 
 
     //On vérifie que le post existe dans la BDD
@@ -50,6 +61,12 @@
 
 ?>
 
+<?php if(isset($_GET["message"])) : ?>
+<div class="notification is-warning m-5">
+    <p><?= $_GET["message"] ?></p>
+</div>
+<?php endif ; ?>
+
 <section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">
     <div class="card m-4" style="width: 80%">
         <header class="card-header">
@@ -61,6 +78,7 @@
             <div class="content">
                 <p><strong>Directed by : </strong><?= strip_tags($movie->movie_director) ?></p>
                 <p><strong>Release date : </strong><?= $movie->movie_date ?></p>
+                <p><strong>Average rate : </strong><?= $average; ?>, (<?= $count; ?>) </p>
 
                 <!-- <p>The information are from : <a href="#"><i> <?= $user->users_fname . " " . $user->users_lname ?></i></a></p> -->
             </div>
@@ -74,32 +92,37 @@
 
 
 <section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">
+    <?php foreach ($posts as $post): ?>
 
     <div class="card m-4" style="width: 60%">
         <header class="card-header">
             <div class="card-header-title is-flex-direction-column is-align-item-flex-start">
-                <h4 class="title is-3"><?= strip_tags($posts->title) ?></h4>
+                <h4 class="title is-3"><?= strip_tags($post->title) ?></h4>
             </div>
         </header>
         <div class="card-content">
             <div class="content">
-                <p><strong><?= $posts->rate ?>/10</strong></p>
-                <p><?= nl2br(htmlspecialchars($posts->comment)) ?></p>
+                <p><strong><?= $post->rate ?>/10</strong></p>
+                <p><?= nl2br(htmlspecialchars($post->comment)) ?></p>
             </div>
         </div>
         <div class="card-content">
             <div class="content">
-                <p>Author : <?= $user->users_fname . " " . $user->users_lname ?></p>
+                <!-- <p>Author : <?= $user->users_fname . " " . $user->users_lname ?></p> -->
             </div>
         </div>        
     </div>
+    <?php endforeach; ?>
 
 </section>
 
 
-<div class="buttons is-centered">
-    <a class="button is-primary is-light is-link" href="addPost.php?id=<?= $movie->movie_id?>">Ajouter un commentaire</a>
-</div>
+            
+<?php if(isset($_SESSION["user"])) : ?> 
+    <div class="buttons is-centered">
+        <a class="button is-primary is-light is-link" href="addComment.php?id=<?= $movie->movie_id?>">Ajouter un commentaire</a>
+    </div>
+<?php endif; ?>
 
 
 <?php

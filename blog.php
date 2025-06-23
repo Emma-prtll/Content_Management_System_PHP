@@ -32,11 +32,11 @@ $req = $db->query($sql);
 //On récupère toutes les données de la BDD
 $movies = $req->fetchAll();
 
-//On va chercher le user auteur du post
-$user_id = $_SESSION["user"]["id"];
-$sql_user = "SELECT * FROM `users` WHERE users_id = $user_id" ;
-$req = $db->query($sql_user);
-$user = $req->fetch();
+// //On va chercher le user auteur du post
+// $user_id = $_SESSION["user"]["id"];
+// $sql_user = "SELECT * FROM `users` WHERE users_id = $user_id" ;
+// $req = $db->query($sql_user);
+// $user = $req->fetch();
 ?>
 
 <?php if(isset($_GET["message"])) : ?>
@@ -61,7 +61,7 @@ $user = $req->fetch();
                   <p><strong>Directed by : </strong><?= strip_tags($movie->movie_director) ?></p>
                   <p><strong>Release date : </strong><?= strip_tags(excerpt($movie->movie_date)) ?></p>
 
-                  <p>The information are from : <a href="#"><i> <?= $user->users_fname . " " . $user->users_lname ?></i></a></p>
+                  <!-- <p>The information are from : <a href="#"><i> <?= $user->users_fname . " " . $user->users_lname ?></i></a></p> -->
                 </div>
             </div>
             <footer class="card-footer"> 
