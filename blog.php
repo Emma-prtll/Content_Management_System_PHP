@@ -40,9 +40,10 @@ $movies = $req->fetchAll();
 ?>
 
 <?php if(isset($_GET["message"])) : ?>
-<div class="notification is-warning m-5">
-    <p><?= $_GET["message"] ?></p>
-</div>
+    <div class="notification is-success m-5" id="notification">
+        <button class="delete"></button>
+        <p><?= $_GET["message"] ?></p>
+    </div>
 <?php endif ; ?>
 
 <section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">
@@ -64,9 +65,13 @@ $movies = $req->fetchAll();
                   <!-- <p>The information are from : <a href="#"><i> <?= $user->users_fname . " " . $user->users_lname ?></i></a></p> -->
                 </div>
             </div>
+
+            
             <footer class="card-footer"> 
                 <a class="button is-primary is-light card-footer-item" href="movie.php?id=<?= $movie->movie_id ?>">Voir les avis</a>
-            </footer>
+
+            </footer> 
+
 
         </div>
     <?php endforeach; ?>
@@ -75,3 +80,7 @@ $movies = $req->fetchAll();
 </div>
 
 </section>
+
+<?php
+include "components/footer.php";
+?>

@@ -47,6 +47,16 @@
     $average = $result->average_rate;
     $count = $result->rate_count;
 
+    //Trouver l'author du post
+    function getAuthor($id, $db) {
+    $sql = "SELECT * FROM users WHERE users_id = :id";
+    $req = $db->prepare($sql);
+    $req->bindValue(":id", $id, PDO::PARAM_INT);
+    $req->execute();
+    return $req->fetch();
+}
+
+
 
     //On vérifie que le post existe dans la BDD
     if(!$movie) {
@@ -68,6 +78,7 @@
     </div>
 <?php endif ; ?>
 
+<!-- FICHE DU FILM -->
 <section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">
     <div class="card m-4" style="width: 80%">
         <header class="card-header">
@@ -85,17 +96,26 @@
                 <p><strong>Average rate : </strong> <?= round($average, 2); ?>, (<?= $count; ?>) </p>
                 <?php endif; ?>
 
-                <!-- <p>The information are from : <a href="#"><i> <?= $user->users_fname . " " . $user->users_lname ?></i></a></p> -->
+                <?php $author =  getAuthor($movie->movieUser_id, $db)?>
+                <p><i>This informations are from : <?= $author->users_fname . " " . $author->users_lname ?></i></p>
+
             </div>
         </div>
+
         <footer class="card-footer">
-            <a class="button is-primary is-light card-footer-item" href="blog.php">Retour</a>
+            <?php if(isset ($_SESSION["user"]) && $_SESSION["user"]["id"] === $movie->movieUser_id) :?>
+                <a href="update.php?id=<?= $movie->movie_id?>" class="button is-warning is-light card-footer-item">Modifier</a>
+                <a href="deletePost.php?id=<?= $movie->movie_id?>" class="button is-danger is-light card-footer-item">Supprimer</a>
+                <a class="button is-primary is-light card-footer-item" href="blog.php">Retour</a>
+            <?php else: ?>
+                <a class="button is-primary is-light card-footer-item" href="blog.php">Retour</a>
+            <?php endif; ?>
         </footer>
     </div>
 </section>
 
 
-
+<!-- COMMENTAIRE DU FILM -->
 <section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">
     <?php foreach ($posts as $post): ?>
 
@@ -113,9 +133,18 @@
         </div>
         <div class="card-content">
             <div class="content">
-                <!-- <p>Author : <?= $user->users_fname . " " . $user->users_lname ?></p> -->
+                <?php $author =  getAuthor($post->author, $db)?>
+                <p>Auteur.trice :<i> <?= $author->users_fname . " " . $author->users_lname ?></i></p>
             </div>
-        </div>        
+        </div> 
+        <footer class="card-footer">
+            <?php if(isset ($_SESSION["user"]) && $_SESSION["user"]["id"] === $post->author) :?>
+                <a href="update.php?id=<?= $post->posts_id?>" class="button is-warning is-light card-footer-item">Modifier</a>
+                <a href="deletePost.php?id=<?= $post->posts_id?>" class="button is-danger is-light card-footer-item">Supprimer</a>
+                <a class="button is-primary is-light card-footer-item" href="blog.php">Retour</a>
+            <?php else: ?>
+            <?php endif; ?>
+        </footer>       
     </div>
     <?php endforeach; ?>
 

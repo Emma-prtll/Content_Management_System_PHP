@@ -1,15 +1,18 @@
 
+//MESSAGE DE CONFIRMATION
+//JAVASCRIPT DE BULMA POUR GERER LE BOUTON "DELETE"
+document.addEventListener('DOMContentLoaded', () => {
+  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode;
 
-// MESSAGE DE CONFIRMATION
-
-let closeMessage = document.getElementById("notification");
-closeMessage.addEventListener('click', () =>{
-    closeMessage.classList.add("deleted");
-})
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.removeChild($notification);
+    });
+  });
+});
 
 
 // CHOIX DES GENRES POUR LA CREATION D'UNE FICHE DE FILM
-
 const checkboxes = document.querySelectorAll('.genre-checkbox');
 const maxGenres = 3;
 
@@ -39,15 +42,4 @@ checkboxes.forEach(box => {
 updateCheckboxState(); // Au chargement
 
 
-
-//JAVASCRIPT DE BULMA
-document.addEventListener('DOMContentLoaded', () => {
-  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
-    const $notification = $delete.parentNode;
-
-    $delete.addEventListener('click', () => {
-      $notification.parentNode.removeChild($notification);
-    });
-  });
-});
 
