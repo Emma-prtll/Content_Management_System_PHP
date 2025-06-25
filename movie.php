@@ -62,9 +62,10 @@
 ?>
 
 <?php if(isset($_GET["message"])) : ?>
-<div class="notification is-warning m-5">
-    <p><?= $_GET["message"] ?></p>
-</div>
+    <div class="notification is-success m-5" id="notification">
+        <button class="delete"></button>
+        <p><?= $_GET["message"] ?></p>
+    </div>
 <?php endif ; ?>
 
 <section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">

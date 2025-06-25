@@ -2,9 +2,9 @@
 
 // MESSAGE DE CONFIRMATION
 
-let closeMessage = document.querySelectorAll('.delete');
+let closeMessage = document.getElementById("notification");
 closeMessage.addEventListener('click', () =>{
-    closeMessage.classList.add('delete')
+    closeMessage.classList.add("deleted");
 })
 
 
@@ -38,4 +38,16 @@ checkboxes.forEach(box => {
 
 updateCheckboxState(); // Au chargement
 
+
+
+//JAVASCRIPT DE BULMA
+document.addEventListener('DOMContentLoaded', () => {
+  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode;
+
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.removeChild($notification);
+    });
+  });
+});
 

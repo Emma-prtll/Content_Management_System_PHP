@@ -8,7 +8,7 @@
 </head>
 <body>
     <style>
-        .delete {
+        .deleted {
             display: none;
         }
     </style>

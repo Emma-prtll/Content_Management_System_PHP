@@ -56,8 +56,6 @@ if(!empty($_POST)) {
         // header("Location: movie.php?message=".$message);
         header("Location: movie.php?id=" . $movie_id . "&message=" . $message);
 
-                //die("Votre article à bien été ajouté avec l'ID $id ! ");
-
 
 
 
