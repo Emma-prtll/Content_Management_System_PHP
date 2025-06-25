@@ -1,58 +1,14 @@
-                <?php if (count($posts) === 0): ?>
-                    <p>Aucun commentaire pour ce film pour le moment.</p>
-                <?php else: ?> 
 
-                <?php endif; ?>
+<div class="checkboxes">
 
-
-                <section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">
-
-    <div class="card m-4" style="width: 60%">
-        <header class="card-header">
-            <div class="card-header-title is-flex-direction-column is-align-item-flex-start">
-                <h4 class="title is-3"><?= strip_tags($posts->title) ?></h4>
-            </div>
-        </header>
-        <div class="card-content">
-            <div class="content">
-                <p><strong><?= $posts->rate ?>/10</strong></p>
-                <p><?= nl2br(htmlspecialchars($posts->comment)) ?></p>
-            </div>
-        </div>
-        <div class="card-content">
-            <div class="content">
-                <p>Author : <?= $user->users_fname . " " . $user->users_lname ?></p>
-            </div>
-        </div>        
-    </div>
-
-</section>
+  <label class="checkbox">
+    <?php foreach ($genres as $genre): ?>
+        <p>
+            <input type="checkbox" id="checkbox">
+            <?= htmlspecialchars($genre->genre) ?>
+        </p>
+    <?php endforeach; ?>
+  </label>
 
 
-
-<section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">
-    <?php if (!empty($posts)): ?>
-        <?php foreach ($posts as $post): ?>
-    <div class="card m-4" style="width: 60%">
-        <header class="card-header">
-            <div class="card-header-title is-flex-direction-column is-align-item-flex-start">
-                <h4 class="title is-3"><?= strip_tags($posts->title) ?></h4>
-            </div>
-        </header>
-        <div class="card-content">
-            <div class="content">
-                <p><strong><?= $posts->rate ?>/10</strong></p>
-                <p><?= nl2br(htmlspecialchars($posts->comment)) ?></p>
-            </div>
-        </div>
-        <div class="card-content">
-            <div class="content">
-                <p>Author : <?= $user->users_fname . " " . $user->users_lname ?></p>
-            </div>
-        </div>        
-    </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p class="has-text-centered">Aucun commentaire pour ce film.</p>
-    <?php endif; ?>
-</section>
+</div>

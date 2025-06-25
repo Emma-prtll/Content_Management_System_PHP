@@ -61,6 +61,17 @@ include "components/nav.php";
 //var_dump($_POST);
 
 ?>
+<style>
+  .tag.selected {
+    background-color:rgb(92, 0, 167) !important;
+    color: white !important;
+  }
+
+  .tag.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+</style>
 
 <section class="section is-flex is-flex-direction-column is-justify-content-center" style="width: 80%">
     <form method="post">
@@ -87,22 +98,21 @@ include "components/nav.php";
             </div>      
         </div>
 
-        <div class="field is-grouped is-grouped-multiline">
-            <label class="label" for="genre">Genre du film</label>
+        <div class="field">
+        <label class="label">Genres du film (1 à 3 max)</label>
+        <div class="tags are-medium" id="genre-container">
             <?php foreach ($genres as $genre): ?>
-                <p class="control">
-                    <button class="button">
-                        <?= htmlspecialchars($genre->genre) ?>
-                    </button>
-                </p>        
+            <label class="tag is-dark check-label">
+                <input type="checkbox" class="genre-checkbox" name="genres[]" value="<?= $genre->genre_id ?>" hidden>
+                <?= htmlspecialchars($genre->genre) ?>
+            </label>
             <?php endforeach; ?>
         </div>
+        </div> 
 
-        <div class="control">
+        <div class="control mt-5">
             <button class="button is-link" type="submit">Poster l'article</button>
         </div>
-
-
     </form>
 </section>
 

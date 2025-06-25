@@ -7,3 +7,8 @@
     <title> <?= $title?? "CMS Filmothèque" ?> </title>
 </head>
 <body>
+    <style>
+        .delete {
+            display: none;
+        }
+    </style>

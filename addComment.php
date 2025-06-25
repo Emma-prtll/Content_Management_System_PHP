@@ -51,9 +51,11 @@ if(!empty($_POST)) {
         //On récupère l'article de l'id qu'on vient de crée
         $id = $db->lastInsertId();
         //On a bien enregister le nouveau post
-        //On redirige l'utilisateur vers le blog et on passe un message a blog.php
+        //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
         $message = urlencode("Bravo, votre commentaire a bien été créé.");
-        header("Location: movie.php?message=".$message);
+        // header("Location: movie.php?message=".$message);
+        header("Location: movie.php?id=" . $movie_id . "&message=" . $message);
+
                 //die("Votre article à bien été ajouté avec l'ID $id ! ");
 
 

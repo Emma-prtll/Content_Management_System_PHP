@@ -78,7 +78,11 @@
             <div class="content">
                 <p><strong>Directed by : </strong><?= strip_tags($movie->movie_director) ?></p>
                 <p><strong>Release date : </strong><?= $movie->movie_date ?></p>
-                <p><strong>Average rate : </strong><?= $average; ?>, (<?= $count; ?>) </p>
+                <?php if($count === 0) : ?>
+                <p>Aucune commentaire</p>
+                <?php else : ?>
+                <p><strong>Average rate : </strong> <?= round($average, 2); ?>, (<?= $count; ?>) </p>
+                <?php endif; ?>
 
                 <!-- <p>The information are from : <a href="#"><i> <?= $user->users_fname . " " . $user->users_lname ?></i></a></p> -->
             </div>
