@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const checkboxes = document.querySelectorAll('.genre-checkbox');
 const maxGenres = 3;
 
+
 function updateCheckboxState() {
   const selected = Array.from(checkboxes).filter(box => box.checked);
 

@@ -2,20 +2,21 @@
 //On démarre la session
 session_start();
 
-//Pour ne pas qu'on puisse avoir acces à la page addPost depuis la barre de recherche sans être connecter
+//Pour ne pas qu'on puisse avoir acces à la page addComment depuis la barre de recherche sans être connecter
 if(!isset($_SESSION["user"])) {
     header("Location: index.php");
 }
 
-    //On vérifie si on reçoit un ID de la part de movie.php
-    if (!isset($_GET['id']) || empty($_GET['id'])) {
-        //ICI je n'ai pas d'ID, je redirige vers movie.php
-        header('Location: movie.php');
-        exit();
-    }
+//On vérifie si on reçoit un ID de la part de movie.php
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    //ICI je n'ai pas d'ID, je redirige vers 404.php
+    http_response_code(404);
+    header("Location: 404.php");
+    exit();
+}
 
-    //On stock l'id du post qu'on souhaite afficher
-    $movie_id = $_GET['id'];
+//On stock l'id du post qu'on souhaite afficher
+$movie_id = $_GET['id'];
 
 //On traite le formulaire
 if(!empty($_POST)) {
@@ -45,7 +46,9 @@ if(!empty($_POST)) {
         $req->bindValue(":movie_id", $movie_id, PDO::PARAM_INT);
         //On exécute la requête qui est protégée
         if(!$req->execute()){
-            die("Une erreur est survenue dans l'envoie du formulaire");
+            http_response_code(500);
+            echo "Désolé, quelque chose n'a pas fonctionné";
+            exit();
         }
 
         //On récupère l'article de l'id qu'on vient de crée
@@ -61,7 +64,7 @@ if(!empty($_POST)) {
 
     } else {
         //Ici, soit le formulaire est vide, soit le champ titre ou contenu est vide
-        die("Le formulaire est incomplet");
+        $messageErreur = "Le formulaire est incomplet.";
     }
 }
 
@@ -75,6 +78,11 @@ include "components/nav.php";
 //var_dump($_POST);
 
 ?>
+<?php if (!empty($messageErreur)): ?>
+    <div class="notification is-danger m-5">
+        <p><?= htmlspecialchars($messageErreur) ?></p>
+    </div>
+<?php endif; ?>
 
 <section class="section is-flex is-flex-direction-column is-justify-content-center">
     <form method="post">

@@ -59,7 +59,7 @@ $movies = $req->fetchAll();
 
             <div class="card-content">
                 <div class="content">
-                  <p><strong>Directed by : </strong><?= strip_tags($movie->movie_director) ?></p>
+                    <p><strong>Directed by : </strong><?= strip_tags($movie->movie_directorFname) . " " . strip_tags($movie->movie_directorLname) ?></p>
                   <p><strong>Release date : </strong><?= strip_tags(excerpt($movie->movie_date)) ?></p>
 
                   <!-- <p>The information are from : <a href="#"><i> <?= $user->users_fname . " " . $user->users_lname ?></i></a></p> -->

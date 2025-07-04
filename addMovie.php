@@ -16,25 +16,57 @@ $genres = $req->fetchAll();
 
 //On traite le formulaire
 if(!empty($_POST)) {
-    if(isset($_POST["name"], $_POST["date"], $_POST["director"]) && !empty($_POST["name"]) && !empty($_POST["date"]) && !empty($_POST["director"])){
+    if(isset($_POST["name"], $_POST["date"], $_POST["directorFname"], $_POST["directorLname"]) && !empty($_POST["name"]) && !empty($_POST["date"]) && !empty($_POST["directorFname"]) && !empty($_POST["directorLname"])){
         //Ici, le formulaire est rempli. Titre et contenu ne sont pas vide
 
-        //On récupère les infos et on les protège
-        $movieName = strip_tags($_POST['name']);
+        //On récupère les infos et on les protège et on supprime les potentielles espaces au début et à la fin des noms avec trim()
+        $movieName = strip_tags(trim($_POST['name']));
         $movieDate = strip_tags($_POST['date']);
-        $movieDirector = strip_tags($_POST['director']);
+        $movieDirectorFname = strip_tags(trim($_POST['directorFname']));
+        $movieDirectorLname = strip_tags(trim($_POST['directorLname']));
         $movieAuthor = $_SESSION["user"]["id"];
+
+
+        //On vérifie l'entrée dans prénom et nom, si ce n'est pas correcte, erreur devient true et le reste du scripte ne sera pas effectué.        
+        $erreur = false;
+        //On vérifie que le prénom et le nom ne contienne pas de chiffre, ou autre caractère non-utilisable
+        $regex = "/^[\p{L} '-]+$/u";
+        if (!preg_match($regex, $movieDirectorFname) || !preg_match($regex, $movieDirectorLname)) {
+            $messageErreur = "Le nom et le prénom doivent contenir uniquement des lettres.";
+            $erreur = true;
+        }
+
+        if(!$erreur){
+        // Récupération des genres sélectionnés (1 à 3)
+        $selectedGenres = $_POST['genres'] ?? [];
+
+        $genre1 = $selectedGenres[0] ?? null;
+        $genre2 = $selectedGenres[1] ?? null;
+        $genre3 = $selectedGenres[2] ?? null;
+
+
+        
+        // On force la première lettre en majuscule et les autres en minuscules (en UTF-8)
+        $movieDirectorFname = mb_convert_case($movieDirectorFname, MB_CASE_TITLE, "UTF-8");
+        $movieDirectorLname = mb_convert_case($movieDirectorLname, MB_CASE_TITLE, "UTF-8");
+
       
         //Requête SQL préparée car ces données viennent du user (POST = requête préparée)
-        $sql = "INSERT INTO `movie` (`movie_name`, `movie_date`, `movie_director`, `movieUser_id`) VALUES (:name, :date, :director, :movieUser)";
+        $sql = "INSERT INTO `movie` (`movie_name`, `movie_date`, `movie_directorFname`, `movie_directorLname`, `movieUser_id`, `genre1`, `genre2`, `genre3`) VALUES (:name, :date, :directorFname, :directorLname, :movieUser, :genre1, :genre2, :genre3)";
         $req = $db->prepare($sql);
         $req->bindValue(":name", $movieName, PDO::PARAM_STR);
         $req->bindValue(":date", $movieDate, PDO::PARAM_STR);
-        $req->bindValue(":director", $movieDirector, PDO::PARAM_STR);
+        $req->bindValue(":directorFname", $movieDirectorFname, PDO::PARAM_STR);
+        $req->bindValue(":directorLname", $movieDirectorLname, PDO::PARAM_STR);
         $req->bindValue(":movieUser", $movieAuthor, PDO::PARAM_INT);
+        $req->bindValue(":genre1", $genre1, PDO::PARAM_INT);
+        $req->bindValue(":genre2", $genre2, PDO::PARAM_INT);
+        $req->bindValue(":genre3", $genre3, PDO::PARAM_INT);
         //On exécute la requête qui est protégée
         if(!$req->execute()){
-            die("Une erreur est survenue dans l'envoie du formulaire");
+            http_response_code(500);
+            echo "Désolé, quelque chose n'a pas fonctionné";
+            exit();
         }
 
         //On récupère l'article de l'id qu'on vient de crée
@@ -43,11 +75,10 @@ if(!empty($_POST)) {
         //On redirige l'utilisateur vers le blog et on passe un message a blog.php
         $message = urlencode("Bravo, votre nouvel article a bien été créé.");
         header("Location: blog.php?message=".$message);
-                //die("Votre article à bien été ajouté avec l'ID $id ! ");
-
+        }
     } else {
         //Ici, soit le formulaire est vide, soit le champ titre ou contenu est vide
-        die("Le formulaire est incomplet");
+        $messageErreur = "Le formulaire est incomplet.";
     }
 }
 
@@ -61,6 +92,8 @@ include "components/nav.php";
 //var_dump($_POST);
 
 ?>
+
+
 <style>
   .tag.selected {
     background-color:rgb(92, 0, 167) !important;
@@ -72,6 +105,12 @@ include "components/nav.php";
     pointer-events: none;
   }
 </style>
+
+<?php if (!empty($messageErreur)): ?>
+    <div class="notification is-danger m-5">
+        <p><?= htmlspecialchars($messageErreur) ?></p>
+    </div>
+<?php endif; ?>
 
 <section class="section is-flex is-flex-direction-column is-justify-content-center" style="width: 80%">
     <form method="post">
@@ -94,8 +133,11 @@ include "components/nav.php";
         <div class="field">
             <label class="label" for="director">Réalisateur.trice</label>
             <div class="control">
-                <input type="text" class="input" name="director" placeholder="Qui a réalisé le film">
-            </div>      
+                <input type="text" class="input" name="directorFname" placeholder="Prénom"> 
+            </div>  
+            <div class="control">
+                <input type="text" class="input" name="directorLname" placeholder="Nom">
+            </div>  
         </div>
 
         <div class="field">
@@ -108,7 +150,7 @@ include "components/nav.php";
             </label>
             <?php endforeach; ?>
         </div>
-        </div> 
+        </div>  
 
         <div class="control mt-5">
             <button class="button is-link" type="submit">Poster l'article</button>

@@ -12,13 +12,34 @@ if(!empty($_POST)){
     if(isset($_POST["lname"], $_POST["fname"], $_POST["mail"], $_POST["password"])
     && !empty($_POST["lname"]) && !empty($_POST["fname"]) && !empty($_POST["mail"]) && !empty($_POST["password"])){
         //Ici, on a un formulaire complet
-        //On récupère les données en les protégeant
-        $lname = strip_tags($_POST["lname"]);
-        $fname = strip_tags($_POST["fname"]);
 
-        if(!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL)) {
-            die("Merci de mettre une adresse email valide.");
+        //On récupère les données en les protégeant et on supprime les potentielles espaces au début et à la fin avec trim()
+        $lname = strip_tags(trim($_POST["lname"]));
+        $fname = strip_tags(trim($_POST["fname"]));
+
+        //On vérifie l'entrée dans prénom et nom, si ce n'est pas correcte, erreur devient true et le reste du scripte ne sera pas effectué.        
+        $erreur = false;
+        //On vérifie que le prénom et le nom ne contienne pas de chiffre, ou autre caractère non-utilisable
+        $regex = "/^[\p{L} '-]+$/u";
+        if (!preg_match($regex, $lname) || !preg_match($regex, $fname)) {
+            $messageErreur = "Le nom et le prénom doivent contenir uniquement des lettres.";
+            $erreur = true;
         }
+
+        //On vérifie que le mail est bien un mail
+        if(!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL)) {
+            $messageErreur = "Merci de remplir par un mail.";
+            $erreur = true;
+        }
+
+        if(!$erreur){
+
+        // On force la première lettre en majuscule et les autres en minuscules (en UTF-8)
+        $lname = mb_convert_case($lname, MB_CASE_TITLE, "UTF-8");
+        $fname = mb_convert_case($fname, MB_CASE_TITLE, "UTF-8");
+
+
+
         //Ici, je sais que l'email est correct
         //Ici, on hache et sécurise le mdp suivant un algo
         $password = password_hash($_POST["password"], PASSWORD_ARGON2I);
@@ -51,10 +72,11 @@ if(!empty($_POST)){
         //On redirige le user vers la page d'accueil
         header("Location: index.php");
         
-
+        }
     } else {
         //Ici, le formulaire est incomplet
-        die("Le formulaire est incomplet.");
+        $messageErreur = "Merci de remplir tout les champs du formulaire.";
+
     }
 }
 
@@ -66,16 +88,11 @@ include "components/header.php";
 include "components/nav.php";
 ?>
 
-<section class="hero is-medium is-success has-text-centered">
-    <div class="hero-body">
-        <p class="title">
-            S'inscrire
-        </p>
-        <p class="subtitle">
-            #register
-        </p>
+<?php if (!empty($messageErreur)): ?>
+    <div class="notification is-danger m-5">
+        <p><?= htmlspecialchars($messageErreur) ?></p>
     </div>
-</section>
+<?php endif; ?>
 
 <form style="display: flex; justify-content: center" method="post">
    <div class="card m-6" style="width: 30%">

@@ -6,8 +6,9 @@
 
     //On vérifie si on reçoit un ID de la part de blog.php
     if (!isset($_GET['id']) || empty($_GET['id'])) {
-        //ICI je n'ai pas d'ID, je redirige vers Blog.php
-        header('Location: blog.php');
+        //ICI je n'ai pas d'ID, je redirige vers 404.php
+        http_response_code(404);
+        header("Location: 404.php");
         exit();
     }
 
@@ -28,6 +29,20 @@
     $req->execute();
     // $posts = $req->fetch();
     $posts = $req->fetchAll(PDO::FETCH_OBJ);  
+
+    //RECUPERE LES GENRES DE LA TABLE FILM POUR LES LIER A LA TABLE DES GENRES
+    $genre_ids = [
+    $movie->genre1,
+    $movie->genre2,
+    $movie->genre3
+    ];
+    //On prépare la requête pour récupérer le(s) genre(s)
+    $sql = "SELECT * FROM genre WHERE `genre_id` IN  (?, ?, ?)";
+    // $req = $db->query($sql);
+    // $genre = $req->fetch();
+    $req = $db->prepare($sql);
+    $req->execute($genre_ids);
+    $genres = $req->fetchAll(PDO::FETCH_OBJ);
 
     // //On va chercher le user auteur du post
     // $user_id = $_SESSION["user"]["id"];
@@ -54,14 +69,13 @@
     $req->bindValue(":id", $id, PDO::PARAM_INT);
     $req->execute();
     return $req->fetch();
-}
-
+    }
 
 
     //On vérifie que le post existe dans la BDD
     if(!$movie) {
         http_response_code(404);
-        echo "Désolé, cet article n'existe pas";
+        header("Location: 404.php");
         exit();
     }
 
@@ -71,6 +85,7 @@
 
 ?>
 
+<!-- Message de confirmation de l'ajout d'un commentaire -->
 <?php if(isset($_GET["message"])) : ?>
     <div class="notification is-success m-5" id="notification">
         <button class="delete"></button>
@@ -88,8 +103,17 @@
         </header>
         <div class="card-content">
             <div class="content">
-                <p><strong>Directed by : </strong><?= strip_tags($movie->movie_director) ?></p>
+                <p><strong>Directed by : </strong><?= strip_tags($movie->movie_directorFname) . " " . strip_tags($movie->movie_directorLname) ?></p>
+
                 <p><strong>Release date : </strong><?= $movie->movie_date ?></p>
+
+                <!-- AFFICHAGE DES GENRES -->
+                <p><strong>Genre : </strong>
+                    <?php foreach ($genres as $genre) {
+                    echo " -" . htmlspecialchars($genre->genre);
+                    } ?>
+                </p>
+
                 <?php if($count === 0) : ?>
                 <p>Aucune commentaire</p>
                 <?php else : ?>
@@ -104,8 +128,8 @@
 
         <footer class="card-footer">
             <?php if(isset ($_SESSION["user"]) && $_SESSION["user"]["id"] === $movie->movieUser_id) :?>
-                <a href="update.php?id=<?= $movie->movie_id?>" class="button is-warning is-light card-footer-item">Modifier</a>
-                <a href="deletePost.php?id=<?= $movie->movie_id?>" class="button is-danger is-light card-footer-item">Supprimer</a>
+                <a href="updateMovie.php?id=<?= $movie->movie_id?>" class="button is-warning is-light card-footer-item">Modifier</a>
+                <a href="deleteMovie.php?id=<?= $movie->movie_id?>" class="button is-danger is-light card-footer-item">Supprimer</a>
                 <a class="button is-primary is-light card-footer-item" href="blog.php">Retour</a>
             <?php else: ?>
                 <a class="button is-primary is-light card-footer-item" href="blog.php">Retour</a>
@@ -128,7 +152,7 @@
         <div class="card-content">
             <div class="content">
                 <p><strong><?= $post->rate ?>/10</strong></p>
-                <p><?= nl2br(htmlspecialchars($post->comment)) ?></p>
+                <p><?= $post->comment ?></p>
             </div>
         </div>
         <div class="card-content">
@@ -138,11 +162,10 @@
             </div>
         </div> 
         <footer class="card-footer">
-            <?php if(isset ($_SESSION["user"]) && $_SESSION["user"]["id"] === $post->author) :?>
-                <a href="update.php?id=<?= $post->posts_id?>" class="button is-warning is-light card-footer-item">Modifier</a>
-                <a href="deletePost.php?id=<?= $post->posts_id?>" class="button is-danger is-light card-footer-item">Supprimer</a>
-                <a class="button is-primary is-light card-footer-item" href="blog.php">Retour</a>
-            <?php else: ?>
+              <?php  if (isset($_SESSION["user"]) && (int)$_SESSION["user"]["id"] === (int)$post->author):?>
+
+                <a href="updateComment.php?id=<?= $post->posts_id?>" class="button is-warning is-light card-footer-item">Modifier</a>
+                <a href="deleteComment.php?id=<?= $post->posts_id?>" class="button is-danger is-light card-footer-item">Supprimer</a>
             <?php endif; ?>
         </footer>       
     </div>
