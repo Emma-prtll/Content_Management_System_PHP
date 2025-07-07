@@ -31,7 +31,7 @@ REPLACE INTO `genre` (`genre_id`, `genre`) VALUES
 	(13, 'western'),
 	(14, 'musical');
 
--- Listage des données de la table cms_bdd.movie : ~10 rows (environ)
+-- Listage des données de la table cms_bdd.movie : ~8 rows (environ)
 REPLACE INTO `movie` (`movie_id`, `movie_name`, `movie_date`, `movie_directorFname`, `movie_directorLname`, `movieUser_id`, `genre1`, `genre2`, `genre3`) VALUES
 	(1, 'Titanic', '2025-06-12', 'moi', '0', 2, 9, NULL, NULL),
 	(2, 'X-men Apocalypse', '2023-06-18', 'Leonardosse', 'Dicaprio', 3, 3, 4, 5),
@@ -42,7 +42,7 @@ REPLACE INTO `movie` (`movie_id`, `movie_name`, `movie_date`, `movie_directorFna
 	(25, 'X-men Retour', '2025-07-03', 'Cali', 'Wolverine', 5, 1, 2, 3),
 	(26, 'les petits mouchoirs', '2025-07-07', 'Guillaume', 'Canet', 18, 3, 9, 10);
 
--- Listage des données de la table cms_bdd.posts : ~27 rows (environ)
+-- Listage des données de la table cms_bdd.posts : ~32 rows (environ)
 REPLACE INTO `posts` (`posts_id`, `comment`, `rate`, `title`, `author`, `movie_id`) VALUES
 	(1, 'Lorem', 3, 'ouioui', '3', 0),
 	(2, 'je trouve se filme vriament bienje trouve se filme vriament bienje trouve se filme vriament bienje trouve se filme vriament bienje trouve se filme vriament bienje trouve se filme vriament bien', 5, 'c\'est au top !', '1', 0),
@@ -77,7 +77,7 @@ REPLACE INTO `posts` (`posts_id`, `comment`, `rate`, `title`, `author`, `movie_i
 	(32, 'wdwqd', 3, 'dwdw', '3', 10),
 	(33, 'trop bien', 10, 'genial', '18', 3);
 
--- Listage des données de la table cms_bdd.users : ~4 rows (environ)
+-- Listage des données de la table cms_bdd.users : ~6 rows (environ)
 REPLACE INTO `users` (`users_id`, `users_fname`, `users_lname`, `users_email`, `users_password`) VALUES
 	(1, 'Emma', 'Portillo', 'emma.portillo03@gmail.com', '1234'),
 	(2, 'test', 'test', 'test.test@gmail.com', '$argon2i$v=19$m=65536,t=4,p=1$ZlVsMTNKMmZybXh1enA5WA$HuWsGudiIOag/TtwTfloYJ+UQGkNERjc1NT3Wn3IeRI'),
