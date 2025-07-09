@@ -1,54 +1,46 @@
-// On sélectionne tous les éléments checkbox ayant la classe "genre-checkbox"
-const genreCheckboxes = document.querySelectorAll('.genre-checkbox');
+//MESSAGE DE CONFIRMATION
+//JAVASCRIPT DE BULMA POUR GERER LE BOUTON "DELETE"
+document.addEventListener('DOMContentLoaded', () => {
+  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode;
 
-// Définir le nombre maximum de genres qu'on peut sélectionner
-const maxGenresAllowed = 3;
-
-/**
- * Fonction qui met à jour l'état des cases à cocher
- * - Active/désactive les cases en fonction du nombre sélectionné
- * - Change l'apparence des étiquettes en fonction de la sélection
- */
-function mettreAJourGenres() {
-  // On crée un tableau contenant uniquement les cases cochées
-  const genresSelectionnes = Array.from(genreCheckboxes).filter(checkbox => checkbox.checked);
-
-  // Pour chaque case à cocher :
-  genreCheckboxes.forEach(checkbox => {
-    // On récupère l'étiquette <label> parente de la checkbox (qui a la classe "tag")
-    const etiquetteGenre = checkbox.closest('label.tag');
-
-    // On applique ou retire la classe "selected" à l'étiquette si la case est cochée ou non
-    etiquetteGenre.classList.toggle('selected', checkbox.checked);
-
-    // Si on a atteint la limite et que cette case n'est pas encore cochée, on la désactive
-    if (genresSelectionnes.length >= maxGenresAllowed && !checkbox.checked) {
-      checkbox.disabled = true; // On empêche l'utilisateur de cocher cette case
-      etiquetteGenre.classList.add('disabled'); // Ajoute une classe visuelle grisée ou bloquée
-    } else {
-      // Sinon, on réactive la case et on enlève le style "disabled"
-      checkbox.disabled = false;
-      etiquetteGenre.classList.remove('disabled');
-    }
-  });
-}
-
-// On ajoute un écouteur de clic à chaque checkbox (via son parent <label>)
-genreCheckboxes.forEach(checkbox => {
-  const etiquette = checkbox.parentElement;
-
-  etiquette.addEventListener('click', event => {
-    // Si la case est désactivée, on ne fait rien
-    if (checkbox.disabled) return;
-
-    // On inverse l'état coché de la case
-    checkbox.checked = !checkbox.checked;
-
-    // Et on met à jour l'affichage
-    mettreAJourGenres();
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.removeChild($notification);
+    });
   });
 });
 
-// On initialise l'affichage au chargement de la page
-mettreAJourGenres();
-console.log(genreCheckboxes.checked)
+
+//CHOIX DES GENRES POUR LA CREATION D'UNE FICHE DE FILM
+const checkboxes = document.querySelectorAll('.genre-checkbox');
+const maxGenres = 3; //Fixe ne nombre max de genre séléctionnable à 3
+
+function updateCheckbox() { //Changement de la couleur et de l'état des checkboxes
+  const selected = Array.from(checkboxes).filter(box => box.checked); //On met la liste des checkboxes dans un tableau et on filtre pour garder les checkboxes cochée
+
+  checkboxes.forEach(box => { //On parcourt chaque checkbox
+    const label = box.closest('label.tag'); //On séléctionne le label parents de tag afin de séléctionner avec le nom (pas uniquement la case à cocher)
+    label.classList.toggle('selected', box.checked); //toggle permet d'ajouter ou retirer suivant l'état actuelle la class "selected"
+
+    const tooManySelected = selected.length >= maxGenres && !box.checked; //On fixe la limite 
+    box.disabled = tooManySelected; //Ne permet pas au user de cliquer sur la case car dékà trop de séléctionnée
+    label.classList.toggle('disabled', tooManySelected); //toggle permet d'ajouter ou retirer suivant l'état actuelle la class "disable"
+  });
+}
+
+//On recommence pour toute les cases cochée
+checkboxes.forEach(box => {
+  const label = box.parentElement;
+
+  label.addEventListener('click', () => {
+    if (box.disabled) return;
+    box.checked = !box.checked;
+    updateCheckbox();
+  });
+});
+
+// Ce lance au chargement
+updateCheckbox(); 
+
+
+

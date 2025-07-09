@@ -15,17 +15,17 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
     exit();
 }
 
-//On stock l'id du post qu'on souhaite afficher
+//On stock l'id du film qu'on souhaite afficher
 $movie_id = $_GET['id'];
 
 //On traite le formulaire
 if(!empty($_POST)) {
     if(isset($_POST["title"], $_POST["content"], $_POST["rate"]) && !empty($_POST["title"]) && !empty($_POST["content"]) && !empty($_POST["rate"])){
-        //Ici, le formulaire est rempli. Titre et contenu ne sont pas vide
+        //Ici, le formulaire est rempli
 
-        //On récupère les infos et on les protège
-        $postTitle = strip_tags($_POST['title']);
-        $postContent = strip_tags($_POST['content']);
+        //On récupère les infos et on les protège et on supprime les potentielles espaces au début et à la fin avec trim()
+        $postTitle = strip_tags(trim($_POST['title']));
+        $postContent = strip_tags(trim($_POST['content']));
         $postRate = strip_tags($_POST['rate']);
         $postAuthor = $_SESSION["user"]["id"];
 
@@ -34,7 +34,7 @@ if(!empty($_POST)) {
         //On se connect à la BDD
         require_once "db.php";
 
-        //Requête SQL préparée car ces données viennent du user (POST = requête préparée)
+        //Requête SQL préparée car ces données viennent du user
         $sql = "INSERT INTO `posts` (`comment`, `rate`, `title`, `author`, `movie_id`) VALUES (:comment, :rate, :title, :author, :movie_id)";
         //On prépare la requête
         $req = $db->prepare($sql);
@@ -51,39 +51,35 @@ if(!empty($_POST)) {
             exit();
         }
 
-        //On récupère l'article de l'id qu'on vient de crée
+        //On récupère l'id de l'article qu'on vient de crée
         $id = $db->lastInsertId();
         //On a bien enregister le nouveau post
-        //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
+        //On redirige l'utilisateur vers la page du film et on passe un message à movie.php
         $message = urlencode("Bravo, votre commentaire a bien été créé.");
-        // header("Location: movie.php?message=".$message);
         header("Location: movie.php?id=" . $movie_id . "&message=" . $message);
 
-
-
-
     } else {
-        //Ici, soit le formulaire est vide, soit le champ titre ou contenu est vide
+        //Ici, soit le formulaire est vide
         $messageErreur = "Le formulaire est incomplet.";
     }
 }
 
 
-$title = "CMS|| Ajouter un commetaire";
-//Integration des du header et de la navbar à la page index
+$title = "Ajouter un commetaire";
+//Integration des du header et de la navbar à la page
 include "components/header.php";
 include "components/nav.php";
 
-//Tester si on récupère bien les infos du formulaire avant de faire le lien avec la BDD
-//var_dump($_POST);
-
 ?>
+
+<!-- Affichage du message d'erreur s'il n'est pas vide, donc s'il existe -->
 <?php if (!empty($messageErreur)): ?>
     <div class="notification is-danger m-5">
         <p><?= htmlspecialchars($messageErreur) ?></p>
     </div>
 <?php endif; ?>
 
+<!-- Formulaire d'ajout de commentaire -->
 <section class="section is-flex is-flex-direction-column is-justify-content-center">
     <form method="post">
         <div class="field">
@@ -118,6 +114,6 @@ include "components/nav.php";
 </section>
 
 <?php
-//Intégration du footer à la page index
+//Intégration du footer à la page 
 include "components/footer.php";
 ?>

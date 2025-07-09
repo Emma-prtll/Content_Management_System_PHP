@@ -1,13 +1,11 @@
 <?php
+//On démarre la session
 session_start();
 
-    include "components/header.php";
-    include "components/nav.php";
+//On se connecte à la base de donnée
+require_once "db.php";
 
-    //var_dump($_GET["id"]);
-
-
-//On vérifie qu'on reçoit un ID de la part de post.php
+//On vérifie qu'on reçoit un ID de la part de movie.php
 if(!isset($_GET["id"]) || empty($_GET["id"])) {
     //ICI je n'ai pas d'ID, je redirige vers 404.php
     http_response_code(404);
@@ -15,12 +13,8 @@ if(!isset($_GET["id"]) || empty($_GET["id"])) {
     exit();
 }
 
-
 //Ici, j'ai reçu l'id de l'article. Je l'enregistre dans une variable
 $id = $_GET["id"];
-
-//On se connecte à la base de donnée
-require_once "db.php";
 
 //On récupère l'article qu'on souhaite modifier dans notre BDD avec son ID
 //Ici, je choisi une requête préparée car l'ID provient de l'url, donc publique, donc je sécurise
@@ -34,6 +28,7 @@ $sql = "SELECT * FROM genre";
 $req = $db->query($sql);
 $genres = $req->fetchAll();
 
+//Je stocke les genres sélectionner afin d'alléger mon code pour la suite
 $genre_1 = $movie->genre1;
 $genre_2 = $movie->genre2;
 $genre_3 = $movie->genre3;
@@ -45,8 +40,9 @@ if($_SESSION["user"]["id"] === $movie->movieUser_id) {
     if(!empty($_POST)) {
         if(isset($_POST["name"], $_POST["date"], $_POST["directorFname"], $_POST["directorLname"]) && !empty($_POST["name"]) && !empty($_POST["date"]) && !empty($_POST["directorFname"]) && !empty($_POST["directorLname"])){
             //Ici, on a un formulaire complet
-            //On récupère les infos en les protégeant
-            $movieName = strip_tags($_POST['name']);
+
+            //On récupère les infos en les protégeant et on supprime les potentielles espaces au début et à la fin avec trim()
+            $movieName = strip_tags(trim($_POST['name']));
             $movieDate = strip_tags($_POST['date']);
             $movieDirectorFname = strip_tags(trim($_POST['directorFname']));
             $movieDirectorLname = strip_tags(trim($_POST['directorLname']));
@@ -61,57 +57,61 @@ if($_SESSION["user"]["id"] === $movie->movieUser_id) {
                 $erreur = true;
             }
         
+            //S'il n'y a pas d'erreur
             if(!$erreur){
-            // Récupération des genres sélectionnés (1 à 3)
-            $selectedGenres = $_POST['genres'] ?? [];
+                // Si moins de 3 genres séléctionnée, alors la case reste vide (null) 
+                $selectedGenres = $_POST['genres'] ?? [];
 
-            $genre1 = $selectedGenres[0] ?? null;
-            $genre2 = $selectedGenres[1] ?? null;
-            $genre3 = $selectedGenres[2] ?? null;
+                $genre1 = $selectedGenres[0] ?? null;
+                $genre2 = $selectedGenres[1] ?? null;
+                $genre3 = $selectedGenres[2] ?? null;
 
-            // On force la première lettre en majuscule et les autres en minuscules (en UTF-8)
-            $movieDirectorFname = mb_convert_case($movieDirectorFname, MB_CASE_TITLE, "UTF-8");
-            $movieDirectorLname = mb_convert_case($movieDirectorLname, MB_CASE_TITLE, "UTF-8");
+                // On force la première lettre en majuscule et les autres en minuscules (en UTF-8)
+                $movieDirectorFname = mb_convert_case($movieDirectorFname, MB_CASE_TITLE, "UTF-8");
+                $movieDirectorLname = mb_convert_case($movieDirectorLname, MB_CASE_TITLE, "UTF-8");
 
-            //Ici, on peut enregistrer les données
-            $sql = "UPDATE movie SET movie_name = :name, movie_date = :date, movie_directorFname = :directorFname, movie_directorLname = :directorLname, genre1 = :genre1, genre2 = :genre2, genre3 = :genre3 WHERE movie_id = :id";
-            $req = $db->prepare($sql);
-            $req->bindValue(":name", $movieName);
-            $req->bindValue(":date", $movieDate);
-            $req->bindValue(":directorFname", $movieDirectorFname);
-            $req->bindValue(":directorLname", $movieDirectorLname);
-            $req->bindValue(":genre1", $genre1, PDO::PARAM_INT);
-            $req->bindValue(":genre2", $genre2, PDO::PARAM_INT);
-            $req->bindValue(":genre3", $genre3, PDO::PARAM_INT);
-            $req->bindValue(":id", $id);
+                //Ici, on peut enregistrer les nouvelles données
+                $sql = "UPDATE movie SET movie_name = :name, movie_date = :date, movie_directorFname = :directorFname, movie_directorLname = :directorLname, genre1 = :genre1, genre2 = :genre2, genre3 = :genre3 WHERE movie_id = :id";
+                $req = $db->prepare($sql);
+                $req->bindValue(":name", $movieName);
+                $req->bindValue(":date", $movieDate);
+                $req->bindValue(":directorFname", $movieDirectorFname);
+                $req->bindValue(":directorLname", $movieDirectorLname);
+                $req->bindValue(":genre1", $genre1, PDO::PARAM_INT);
+                $req->bindValue(":genre2", $genre2, PDO::PARAM_INT);
+                $req->bindValue(":genre3", $genre3, PDO::PARAM_INT);
+                $req->bindValue(":id", $id);
 
-            if(!$req->execute()) {
-                http_response_code(500);
-                echo "Désolé, quelque chose n'a pas fonctionné";
-                exit();
-            }
-            //Ici, on a un uptade qui a réussi
-            // header("Location: movie.php?id=" .$id);
+                //On exécute la requête qui est protégée
+                if(!$req->execute()) {
+                    http_response_code(500);
+                    echo "Désolé, quelque chose n'a pas fonctionné";
+                    exit();
+                }
 
-            //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
-            $message = urlencode("Vous avez modifier la fiche du film : " . $movieName);
-            // header("Location: movie.php?message=".$message);
-            header("Location: movie.php?id=" . $id . "&message=" . $message);
-
+                //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
+                $message = urlencode("Vous avez modifier la fiche du film : " . $movieName);
+                header("Location: movie.php?id=" . $id . "&message=" . $message);
 
             }
-            } else {
-                $messageErreur = "Le formulaire est incomplet.";
-            }
+        } else {
+            //Ici, soit le formulaire est vide soit incomplet
+            $messageErreur = "Le formulaire est incomplet.";
         }
+    }
 
 } else {
     header("Location: movie.php?id=" .$id);
 }
 
+$title = "$movie->movie_name";
+//Integration des du header et de la navbar à la page
+include "components/header.php";
+include "components/nav.php";
 
 ?>
 
+<!-- Style pour les checkboxs des genres | c.f. js/index.js -->
 <style>
   .tag.selected {
     background-color:rgb(92, 0, 167) !important;
@@ -124,12 +124,14 @@ if($_SESSION["user"]["id"] === $movie->movieUser_id) {
   }
 </style>
 
+<!-- Affichage du message d'erreur s'il n'est pas vide, donc s'il existe -->
 <?php if (!empty($messageErreur)): ?>
     <div class="notification is-danger m-5">
         <p><?= htmlspecialchars($messageErreur) ?></p>
     </div>
 <?php endif; ?>
 
+<!-- Formulaire mise à jour de la fiche du film -->
 <section class="section is-flex is-flex-direction-column is-justify-content-center">
     <form method="post">
         <div class="field">
@@ -153,17 +155,21 @@ if($_SESSION["user"]["id"] === $movie->movieUser_id) {
                 <input type="text" class="input" name="directorLname" value=<?= $movie->movie_directorLname ?>>
             </div>  
         </div>
+
+        <!-- Liste des genres -->
         <div class="field">
             <label class="label">Genres du film (1 à 3 max)</label>
             <div class="tags are-medium" id="genre-container">
                 <?php foreach ($genres as $genre): ?>
-                <!-- <label class="tag is-dark"> -->
+                    <!-- Affichage des genres déjà sélectionner (avant update) en clair -->
                     <?php if($genre->genre_id === $genre_1 || $genre->genre_id === $genre_2 || $genre->genre_id === $genre_3) :?>
                         <label class="tag is-info is-light">
+                        <!-- hidden = cacher "supprimer" la carré de la checkbox -->
                         <input type="checkbox" class="genre-checkbox" name="genres[]" value="<?= $genre->genre_id ?>" hidden>
                         <?= htmlspecialchars($genre->genre) ?>
                     <?php else: ?>
                         <label class="tag is-dark">
+                        <!-- hidden = cacher "supprimer" la carré de la checkbox -->
                         <input type="checkbox" class="genre-checkbox" name="genres[]" value="<?= $genre->genre_id ?>" hidden>
                         <?= htmlspecialchars($genre->genre) ?>
                     <?php endif; ?>
@@ -175,12 +181,11 @@ if($_SESSION["user"]["id"] === $movie->movieUser_id) {
         <div class="control  mt-5">
             <button class="button is-info" type="submit">Modifier mon post</button>
             <a class="button is-danger is-light ml-5" href="movie.php?id=<?= $id ?>"><strong>Annuler</strong> </a>
-
         </div>
     </form>
 </section>
 
 <?php
-//Intégration du footer à la page index
+//Intégration du footer à la page index | indispensable pour le javascript
 include "components/footer.php";
 ?>

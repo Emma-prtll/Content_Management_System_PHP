@@ -1,9 +1,9 @@
         <footer class="footer">
         <div class="content has-text-centered">
-            <p><Strong>Emma Portillo</Strong> follow me on <a href="#">Behance</a></p>
+            <p><Strong>Emma Portillo</Strong></p>
+            <p>Follow me on <a href="https://www.behance.net/emmaportillo1">Behance</a> and <a href="https://github.com/Emma-prtll">GitHub</a></p>
         </div>
         </footer>
-         <!-- <script src="/js/index.js"></script> -->
-         <script src="/js/index2.js"></script>
+         <script src="/js/index.js"></script>
     </body>
 </html>

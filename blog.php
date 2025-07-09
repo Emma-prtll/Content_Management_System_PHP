@@ -1,44 +1,25 @@
 <?php
 //On démarre la session
 session_start();
-     
-//Changement du title de la page
-$title = "CMS - Blog";
-
-//Intégration du header et de la navigation
-include "components/header.php";
-include "components/nav.php";
 
 require_once "db.php";
 
-//Fonction pour tronquer le texte à une limite de caractère afin de faire fonctionner le "voir plus" | $limit = nbr de caractère max
-function excerpt(string $content, int $limit = 100)
-{
-    //Si la longueur du texte est plus petite ou égale à la limite, on ne fait rien. 
-    if(strlen($content) <= $limit){
-        return $content;
-    }
-    //On cherche le premier espace après la limite, pour ne pas couper un mot en son milieu | dans le $content, il cherche l'espace (' '), depuis la $limit
-    $lastSpace = strpos($content, ' ', $limit);
 
-    //On return la phrase coupée au bon endroit et on met les "..."
-    return substr($content, 0, $lastSpace) . '...';
-}
 
-//On fait notre requête pour obtenir tous les posts par ordre descendant (plus récent en premier)
+//On fait notre requête pour obtenir tous les posts
 $sql = "SELECT * FROM movie";
-//Données non sensibles, donc requête non préparée ($db->query() et non pas $db->prepare())
+//Données non sensibles, donc requête non préparée
 $req = $db->query($sql);
-//On récupère toutes les données de la BDD
 $movies = $req->fetchAll();
 
-// //On va chercher le user auteur du post
-// $user_id = $_SESSION["user"]["id"];
-// $sql_user = "SELECT * FROM `users` WHERE users_id = $user_id" ;
-// $req = $db->query($sql_user);
-// $user = $req->fetch();
+$title = "Blog";
+//Integration des du header et de la navbar à la page
+include "components/header.php";
+include "components/nav.php";
+
 ?>
 
+<!-- Affichage du message de confirmation envoyer par addMovie.php ou deleteMovie.php s'il n'est pas vide, donc s'il existe -->
 <?php if(isset($_GET["message"])) : ?>
     <div class="notification is-success m-5" id="notification">
         <button class="delete"></button>
@@ -46,8 +27,8 @@ $movies = $req->fetchAll();
     </div>
 <?php endif ; ?>
 
+<!-- Fiche du film -->
 <section class="is-flex is-flex-wrap-wrap is-justify-content-center m-4">
-
     <?php foreach ($movies as $movie): ?>
         <div class="card m-4" style="width: 30%">
 
@@ -60,27 +41,20 @@ $movies = $req->fetchAll();
             <div class="card-content">
                 <div class="content">
                     <p><strong>Directed by : </strong><?= strip_tags($movie->movie_directorFname) . " " . strip_tags($movie->movie_directorLname) ?></p>
-                  <p><strong>Release date : </strong><?= strip_tags(excerpt($movie->movie_date)) ?></p>
-
-                  <!-- <p>The information are from : <a href="#"><i> <?= $user->users_fname . " " . $user->users_lname ?></i></a></p> -->
+                    <p><strong>Release date : </strong><?= strip_tags($movie->movie_date) ?></p>
                 </div>
             </div>
-
             
             <footer class="card-footer"> 
+                <!-- Récupère l'id du film pour l'ouvrir sur la page movie.php -->
                 <a class="button is-primary is-light card-footer-item" href="movie.php?id=<?= $movie->movie_id ?>">Voir les avis</a>
-
             </footer> 
-
 
         </div>
     <?php endforeach; ?>
-
-
-</div>
-
 </section>
 
 <?php
+//Intégration du footer à la page 
 include "components/footer.php";
 ?>

@@ -11,10 +11,7 @@ $title = "404";
 //Intégration du header
 include "components/header.php";
 
-
-
 ?>
-
 <section>
     <section class="hero is-medium is-danger">
         <div class="hero-body">

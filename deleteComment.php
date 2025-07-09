@@ -1,18 +1,16 @@
 <?php
 session_start();
 
-    include "components/header.php";
-    include "components/nav.php";
+include "components/header.php";
+include "components/nav.php";
 
-
-//On vérifie qu'on reçoit un ID de la part de post.php
+//On vérifie qu'on reçoit l'id du post venant de la page movie.php
 if(!isset($_GET["id"]) || empty($_GET["id"])) {
-    //ICI je n'ai pas d'ID, je redirige vers 404.php
+    //Ici, je n'ai pas d'ID, je redirige vers 404.php
     http_response_code(404);
     header("Location: 404.php");
     exit();
 }
-
 
 //Ici, j'ai reçu l'id de l'article. Je l'enregistre dans une variable
 $id = $_GET["id"];
@@ -31,7 +29,7 @@ $post = $req->fetch();
 //On vérifie si l'article est vide
 if(!$post) {
     http_response_code(404);
-    echo "Désolé, aucun article trouvé";
+    header("Location: 404.php");
     exit();
 }
 
@@ -48,5 +46,8 @@ if($_SESSION["user"]["id"] ===  (int)$post->author) {
     header("Location: movie.php?id=" . $post->movie_id . "&message=" . $message);
     
 } else {
+    //Ici, l'article n'appartient pas au user connecté, on le redirige donc sur la page blog
     header("Location: blog.php");
 }
+
+?>

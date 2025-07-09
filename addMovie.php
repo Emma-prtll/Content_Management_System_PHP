@@ -2,7 +2,7 @@
 //On démarre la session
 session_start();
 
-//Pour ne pas qu'on puisse avoir acces à la page addPost depuis la barre de recherche sans être connecter
+//Pour ne pas qu'on puisse avoir acces à la page addMovie depuis la barre de recherche sans être connecter
 if(!isset($_SESSION["user"])) {
     header("Location: index.php");
 }
@@ -10,6 +10,7 @@ if(!isset($_SESSION["user"])) {
 //On se connect à la BDD
 require_once "db.php";
 
+//On récupère la liste des genres
 $sql = "SELECT * FROM genre";
 $req = $db->query($sql);
 $genres = $req->fetchAll();
@@ -17,7 +18,7 @@ $genres = $req->fetchAll();
 //On traite le formulaire
 if(!empty($_POST)) {
     if(isset($_POST["name"], $_POST["date"], $_POST["directorFname"], $_POST["directorLname"]) && !empty($_POST["name"]) && !empty($_POST["date"]) && !empty($_POST["directorFname"]) && !empty($_POST["directorLname"])){
-        //Ici, le formulaire est rempli. Titre et contenu ne sont pas vide
+        //Ici, le formulaire est rempli
 
         //On récupère les infos et on les protège et on supprime les potentielles espaces au début et à la fin des noms avec trim()
         $movieName = strip_tags(trim($_POST['name']));
@@ -36,64 +37,61 @@ if(!empty($_POST)) {
             $erreur = true;
         }
 
+        //S'il n'y a pas d'erreur
         if(!$erreur){
-        // Récupération des genres sélectionnés (1 à 3)
-        $selectedGenres = $_POST['genres'] ?? [];
+            // Si moins de 3 genres séléctionnée, alors la case reste vide (null) 
+            $selectedGenres = $_POST['genres'] ?? [];
 
-        $genre1 = $selectedGenres[0] ?? null;
-        $genre2 = $selectedGenres[1] ?? null;
-        $genre3 = $selectedGenres[2] ?? null;
+            $genre1 = $selectedGenres[0] ?? null;
+            $genre2 = $selectedGenres[1] ?? null;
+            $genre3 = $selectedGenres[2] ?? null;
 
-
+            //On force la première lettre en majuscule et les autres en minuscules (en UTF-8)
+            $movieDirectorFname = mb_convert_case($movieDirectorFname, MB_CASE_TITLE, "UTF-8");
+            $movieDirectorLname = mb_convert_case($movieDirectorLname, MB_CASE_TITLE, "UTF-8");
         
-        // On force la première lettre en majuscule et les autres en minuscules (en UTF-8)
-        $movieDirectorFname = mb_convert_case($movieDirectorFname, MB_CASE_TITLE, "UTF-8");
-        $movieDirectorLname = mb_convert_case($movieDirectorLname, MB_CASE_TITLE, "UTF-8");
+            //Requête SQL préparée car ces données viennent du user
+            $sql = "INSERT INTO `movie` (`movie_name`, `movie_date`, `movie_directorFname`, `movie_directorLname`, `movieUser_id`, `genre1`, `genre2`, `genre3`) VALUES (:name, :date, :directorFname, :directorLname, :movieUser, :genre1, :genre2, :genre3)";
+            $req = $db->prepare($sql);
+            $req->bindValue(":name", $movieName, PDO::PARAM_STR);
+            $req->bindValue(":date", $movieDate, PDO::PARAM_STR);
+            $req->bindValue(":directorFname", $movieDirectorFname, PDO::PARAM_STR);
+            $req->bindValue(":directorLname", $movieDirectorLname, PDO::PARAM_STR);
+            $req->bindValue(":movieUser", $movieAuthor, PDO::PARAM_INT);
+            $req->bindValue(":genre1", $genre1, PDO::PARAM_INT);
+            $req->bindValue(":genre2", $genre2, PDO::PARAM_INT);
+            $req->bindValue(":genre3", $genre3, PDO::PARAM_INT);
 
-      
-        //Requête SQL préparée car ces données viennent du user (POST = requête préparée)
-        $sql = "INSERT INTO `movie` (`movie_name`, `movie_date`, `movie_directorFname`, `movie_directorLname`, `movieUser_id`, `genre1`, `genre2`, `genre3`) VALUES (:name, :date, :directorFname, :directorLname, :movieUser, :genre1, :genre2, :genre3)";
-        $req = $db->prepare($sql);
-        $req->bindValue(":name", $movieName, PDO::PARAM_STR);
-        $req->bindValue(":date", $movieDate, PDO::PARAM_STR);
-        $req->bindValue(":directorFname", $movieDirectorFname, PDO::PARAM_STR);
-        $req->bindValue(":directorLname", $movieDirectorLname, PDO::PARAM_STR);
-        $req->bindValue(":movieUser", $movieAuthor, PDO::PARAM_INT);
-        $req->bindValue(":genre1", $genre1, PDO::PARAM_INT);
-        $req->bindValue(":genre2", $genre2, PDO::PARAM_INT);
-        $req->bindValue(":genre3", $genre3, PDO::PARAM_INT);
-        //On exécute la requête qui est protégée
-        if(!$req->execute()){
-            http_response_code(500);
-            echo "Désolé, quelque chose n'a pas fonctionné";
-            exit();
+            //On exécute la requête qui est protégée
+            if(!$req->execute()){
+                http_response_code(500);
+                echo "Désolé, quelque chose n'a pas fonctionné";
+                exit();
+            }
+
+            //On récupère l'id de l'article qu'on vient de crée
+            $id = $db->lastInsertId();
+            //On a bien enregister le nouveau post
+            //On redirige l'utilisateur vers le blog et on passe un message à blog.php
+            $message = urlencode("Bravo, votre nouvel article a bien été créé.");
+            header("Location: blog.php?message=".$message);
         }
 
-        //On récupère l'article de l'id qu'on vient de crée
-        $id = $db->lastInsertId();
-        //On a bien enregister le nouveau post
-        //On redirige l'utilisateur vers le blog et on passe un message a blog.php
-        $message = urlencode("Bravo, votre nouvel article a bien été créé.");
-        header("Location: blog.php?message=".$message);
-        }
     } else {
-        //Ici, soit le formulaire est vide, soit le champ titre ou contenu est vide
+        //Ici, soit le formulaire est vide soit incomplet
         $messageErreur = "Le formulaire est incomplet.";
     }
 }
 
 
-$title = "CMS|| Ajouter un commetaire";
-//Integration des du header et de la navbar à la page index
+$title = "Ajouter un film";
+//Integration des du header et de la navbar à la page
 include "components/header.php";
 include "components/nav.php";
 
-//Tester si on récupère bien les infos du formulaire avant de faire le lien avec la BDD
-//var_dump($_POST);
-
 ?>
 
-
+<!-- Style pour les checkboxs des genres | c.f. js/index.js -->
 <style>
   .tag.selected {
     background-color:rgb(92, 0, 167) !important;
@@ -106,12 +104,14 @@ include "components/nav.php";
   }
 </style>
 
+<!-- Affichage du message d'erreur s'il n'est pas vide, donc s'il existe -->
 <?php if (!empty($messageErreur)): ?>
     <div class="notification is-danger m-5">
         <p><?= htmlspecialchars($messageErreur) ?></p>
     </div>
 <?php endif; ?>
 
+<!-- Formulaire d'ajout de la fiche du film -->
 <section class="section is-flex is-flex-direction-column is-justify-content-center" style="width: 80%">
     <form method="post">
         <div class="field">
@@ -140,12 +140,14 @@ include "components/nav.php";
             </div>  
         </div>
 
+        <!-- Liste des genres -->
         <div class="field">
         <label class="label">Genres du film (1 à 3 max)</label>
         <div class="tags are-medium" id="genre-container">
             <?php foreach ($genres as $genre): ?>
             <label class="tag is-dark check-label">
-                <input type="checkbox" class="genre-checkbox" name="genres[]" value="<?= $genre->genre_id ?>" hidden>
+                <!-- hidden = cacher "supprimer" la carré de la checkbox -->
+                <input type="checkbox" class="genre-checkbox" name="genres[]" value="<?= $genre->genre_id ?>" hidden> 
                 <?= htmlspecialchars($genre->genre) ?>
             </label>
             <?php endforeach; ?>
@@ -159,6 +161,6 @@ include "components/nav.php";
 </section>
 
 <?php
-//Intégration du footer à la page index
+//Intégration du footer à la page | indispensable pour le javascript
 include "components/footer.php";
 ?>

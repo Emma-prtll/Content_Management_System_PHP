@@ -1,26 +1,20 @@
 <?php
+//On démarre la session
 session_start();
 
-    include "components/header.php";
-    include "components/nav.php";
+//On se connecte à la base de donnée
+require_once "db.php";
 
-    //var_dump($_GET["id"]);
-
-
-//On vérifie qu'on reçoit un ID de la part de post.php
+//On vérifie qu'on reçoit un ID de la part de movie.php
 if(!isset($_GET["id"]) || empty($_GET["id"])) {
-    //ICI je n'ai pas d'ID, je redirige vers 404.php
+    //Ici, je n'ai pas d'ID, je redirige vers 404.php
     http_response_code(404);
     header("Location: 404.php");
     exit();
 }
 
-
 //Ici, j'ai reçu l'id de l'article. Je l'enregistre dans une variable
 $id = $_GET["id"];
-
-//On se connecte à la base de donnée
-require_once "db.php";
 
 //On récupère l'article qu'on souhaite modifier dans notre BDD avec son ID
 //Ici, je choisi une requête préparée car l'ID provient de l'url, donc publique, donc je sécurise
@@ -37,13 +31,15 @@ if($_SESSION["user"]["id"] === (int)$post->author) {
     if(!empty($_POST)) {
         if(isset($_POST["title"], $_POST["content"], $_POST["rate"]) && !empty($_POST["title"]) && !empty($_POST["content"]) && !empty($_POST["rate"])){
             //Ici, on a un formulaire complet
-            //On récupère les infos et on les protège
-            $postTitle = strip_tags($_POST['title']);
-            $postContent = strip_tags($_POST['content']);
+
+            //On récupère les infos et on les protège et on supprime les potentielles espaces au début et à la fin avec trim()
+            $postTitle = strip_tags(trim($_POST['title']));
+            $postContent = strip_tags(trim($_POST['content']));
             $postRate = strip_tags($_POST['rate']);
             $postAuthor = $_SESSION["user"]["id"];
 
             //Ici, on peut enregistrer les données
+            //Requête SQL préparée car ces données viennent du user
             $sql = "UPDATE posts SET title = :title, comment = :content, rate = :rate  WHERE posts_id = :id";
             $req = $db->prepare($sql);
 
@@ -57,11 +53,8 @@ if($_SESSION["user"]["id"] === (int)$post->author) {
                 echo "Désolé, quelque chose n'a pas fonctionné";
                 exit();
             }
-            //Ici, on a un uptade qui a réussi
-            // header("Location: movie.php?id=" .$id);
 
-
-            $movieId = 
+            // $movieId = 
             //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
             $message = urlencode("Vous avez modifier votre commentaire");
             header("Location: movie.php?id=" . $post->movie_id . "&message=" . $message);
@@ -73,8 +66,14 @@ if($_SESSION["user"]["id"] === (int)$post->author) {
     header("Location: index.php?id=" .$id);
 }
 
+$title = "$post->title";
+//Integration des du header et de la navbar à la page
+include "components/header.php";
+include "components/nav.php";
+
 ?>
 
+<!-- Formulaire de mise à jour du commentaire -->
 <section class="section is-flex is-flex-direction-column is-justify-content-center">
     <form method="post">
         <div class="field">

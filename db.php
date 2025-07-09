@@ -1,5 +1,4 @@
 <?php
-
 // Constante d'environnement
 const DBHOST = "localhost";
 const DBUSER = "root";
@@ -17,13 +16,17 @@ try {
     //On définit le type de données retournées par la BDD
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
-    //Afficher un message de réussite en cas de connexion avec la BDD
-    echo "<p style='color: green;'>✅ Connexion à la base de données réussie.</p>";
+    //Afficher un message de réussite en cas de connexion avec la BDD | Utile lors de la création du site
+    //echo "<p style='color: green;'>✅ Connexion à la base de données réussie.</p>";
 
 } catch (PDOException $exception) {
-    //Afficher un message d'erreur en cas de connexion ratée avec la BDD
-    echo "<p style='color: red;'>❌ Erreur de connexion à la base de données : " . $exception->getMessage() . "</p>";
-    die();
+    //Afficher un message d'erreur en cas de connexion ratée avec la BDD | Utile lors de la création du site
+    //echo "<p style='color: red;'>❌ Erreur de connexion à la base de données : " . $exception->getMessage() . "</p>";
+
+    //Si la connexion à la base de donnée est ratée -> affichage de la page 404
+    http_response_code(404);
+    header("Location: 404.php");
+    exit();
 }
 
 ?>
