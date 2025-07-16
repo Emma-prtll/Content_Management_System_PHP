@@ -94,12 +94,12 @@ include "components/nav.php";
         </header>
         <div class="card-content">
             <div class="content">
-                <p><strong>Directed by : </strong><?= strip_tags($movie->movie_directorFname) . " " . strip_tags($movie->movie_directorLname) ?></p>
+                <p><strong>Réalisateur.trice : </strong><?= strip_tags($movie->movie_directorFname) . " " . strip_tags($movie->movie_directorLname) ?></p>
 
-                <p><strong>Release date : </strong><?= $movie->movie_date ?></p>
+                <p><strong>Date de sortie : </strong><?= $movie->movie_date ?></p>
 
                 <!-- AFFICHAGE DES GENRES -->
-                <p><strong>Genre : </strong>
+                <p><strong>Genre(s) : </strong>
                     <?php foreach ($genres as $genre) {
                     echo " -" . htmlspecialchars($genre->genre);
                     } ?>
@@ -108,11 +108,11 @@ include "components/nav.php";
                 <?php if($count === 0) : ?>
                 <p>Aucune commentaire</p>
                 <?php else : ?>
-                <p><strong>Average rate : </strong> <?= round($average, 2); ?>, (<?= $count; ?>) </p>
+                <p><strong>Moyenne de la note : </strong> <?= round($average, 2); ?>, (<?= $count; ?>) </p>
                 <?php endif; ?>
 
                 <?php $author =  getAuthor($movie->movieUser_id, $db)?>
-                <p><i>This informations are from : <?= $author->users_fname . " " . $author->users_lname ?></i></p>
+                <p><i>Ces informations viennent de : <?= $author->users_fname . " " . $author->users_lname ?></i></p>
 
             </div>
         </div>

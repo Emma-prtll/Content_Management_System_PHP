@@ -79,10 +79,10 @@ include "components/nav.php";
 
 <!-- Formulaire de connexion -->
 <section class="section">
-    <form style="display: flex; justify-content: center" method="post">
+    <form style="display: flex; justify-content: center" method="post" class="pb-6">
         <div class="card m-6" style="width: 30%">
             <header class="card-header has-background-dark">
-                <p class="card-header-title is-size-4 is-centered has-text-light">Connection</p>
+                <p class="card-header-title is-size-4 is-centered has-text-light">Connexion</p>
             </header>
 
             <div class="card-content">

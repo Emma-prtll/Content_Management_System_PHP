@@ -64,13 +64,13 @@ include "components/nav.php";
 ?>
 
 <!-- Texte informatif sur la page -->
-<section class="has-text-centered mt-6">
+<section class="has-text-centered mt-6 pb-6">
     <h3 class="title is-3">Rechercher un film afin de savoir si quelqu'un en a déjà parlé !</h3>
     <h3 class="subtitle  is-3">Veuillez indiquer le nom du film ou le <strong>nom de famille</strong> du réalisateur ou de la réalisatrice !</h3>
     <h4 class="subtitle  is-4"><i>Si la fiche du film existe déjà, laisse-y un commentaire, sinon on te laisse prendre le soin de créer la fiche du film !</i></h4>
 </section>
 
-<section style="display: flex" class="is-justify-content-space-evenly">
+<section style="display: flex" class="is-justify-content-space-evenly pb-6">
 
 <!-- Formulaire de recherche par nom de film -->
     <div class="box my-6" style="width: 40%;">

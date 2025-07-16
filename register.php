@@ -133,7 +133,7 @@ include "components/nav.php";
                    </div>
                </div>
                <div class="field">
-                   <label class="label" for="passwordConf">Votre mot de passe</label>
+                   <label class="label" for="passwordConf">Confirmez votre mot de passe</label>
                    <div class="control">
                        <input class="input" type="password" name="passwordConf" placeholder="Confirmez votre mot de passe">
                    </div>

@@ -40,8 +40,8 @@ include "components/nav.php";
 
             <div class="card-content">
                 <div class="content">
-                    <p><strong>Directed by : </strong><?= strip_tags($movie->movie_directorFname) . " " . strip_tags($movie->movie_directorLname) ?></p>
-                    <p><strong>Release date : </strong><?= strip_tags($movie->movie_date) ?></p>
+                    <p><strong>Réalisateur.trice : </strong><?= strip_tags($movie->movie_directorFname) . " " . strip_tags($movie->movie_directorLname) ?></p>
+                    <p><strong>Date de sortie : </strong><?= strip_tags($movie->movie_date) ?></p>
                 </div>
             </div>
             
