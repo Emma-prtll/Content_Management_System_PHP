@@ -60,7 +60,7 @@ if(!empty($_POST)) {
 
     } else {
         //Ici, soit le formulaire est vide
-        $messageErreur = "Le formulaire est incomplet.";
+        $messageErreur = "Merci de remplir tous les champs du formulaire.";
     }
 }
 

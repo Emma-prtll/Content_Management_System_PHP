@@ -82,7 +82,7 @@ if(!empty($_POST)){
         }
     } else {
         //Ici, le formulaire est incomplet
-        $messageErreur = "Merci de remplir tout les champs du formulaire.";
+        $messageErreur = "Merci de remplir tous les champs du formulaire.";
     }
 }
 
@@ -135,7 +135,7 @@ include "components/nav.php";
                <div class="field">
                    <label class="label" for="passwordConf">Confirmez votre mot de passe</label>
                    <div class="control">
-                       <input class="input" type="password" name="passwordConf" placeholder="Confirmez votre mot de passe">
+                       <input class="input" type="password" name="passwordConf" placeholder="Votre mot de passe">
                    </div>
                </div>
            </div>

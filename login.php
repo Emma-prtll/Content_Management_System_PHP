@@ -59,7 +59,7 @@ if(!empty($_POST)){
 
     } else {
         //Ici, le forumulaire est incomplet
-        $messageErreur = "Le formulaire est incomplet.";
+        $messageErreur = "Merci de remplir tous les champs du formulaire.";
     }
 }
 

@@ -79,7 +79,7 @@ if(!empty($_POST)) {
 
     } else {
         //Ici, soit le formulaire est vide soit incomplet
-        $messageErreur = "Le formulaire est incomplet.";
+        $messageErreur = "Merci de remplir tous les champs du formulaire.";
     }
 }
 
@@ -132,7 +132,7 @@ include "components/nav.php";
 
         <div class="field">
             <label class="label" for="director">Réalisateur.trice</label>
-            <div class="control">
+            <div class="control mb-3">
                 <input type="text" class="input" name="directorFname" placeholder="Prénom"> 
             </div>  
             <div class="control">

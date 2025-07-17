@@ -90,7 +90,7 @@ if($_SESSION["user"]["id"] === $movie->movieUser_id) {
                 }
 
                 //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
-                $message = urlencode("Vous avez modifier la fiche du film : " . $movieName);
+                $message = urlencode("Vous avez modifié la fiche du film : " . $movieName);
                 header("Location: movie.php?id=" . $id . "&message=" . $message);
 
             }

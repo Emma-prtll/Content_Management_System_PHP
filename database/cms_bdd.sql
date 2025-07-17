@@ -15,25 +15,25 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Listage des données de la table cms_bdd.genre : ~14 rows (environ)
-INSERT INTO `genre` (`genre_id`, `genre`) VALUES
-	(1, 'comedy'),
-	(2, 'romantic'),
-	(3, 'action'),
-	(4, 'suspense'),
-	(5, 'historic'),
-	(6, 'horror'),
-	(7, 'teen-movie'),
-	(8, 'adventure'),
-	(9, 'heist'),
-	(10, 'holidays'),
-	(11, 'thriller'),
-	(12, 'science-fiction'),
-	(13, 'western'),
-	(14, 'musical');
+REPLACE INTO `genre` (`genre_id`, `genre`) VALUES
+	(1, 'Comedie'),
+	(2, 'Romantique'),
+	(3, 'Action'),
+	(4, 'Suspense'),
+	(5, 'Historique'),
+	(6, 'Horreur'),
+	(7, 'Teen-movie'),
+	(8, 'Aventure'),
+	(9, 'Casse'),
+	(10, 'Noël'),
+	(11, 'Thriller'),
+	(12, 'Science-fiction'),
+	(13, 'Western'),
+	(14, 'Comedie Musical');
 
 -- Listage des données de la table cms_bdd.movie : ~9 rows (environ)
-INSERT INTO `movie` (`movie_id`, `movie_name`, `movie_date`, `movie_directorFname`, `movie_directorLname`, `movieUser_id`, `genre1`, `genre2`, `genre3`) VALUES
-	(1, 'Titanic', '1997-12-19', 'James', 'Cameron', 21, 3, 4, NULL),
+REPLACE INTO `movie` (`movie_id`, `movie_name`, `movie_date`, `movie_directorFname`, `movie_directorLname`, `movieUser_id`, `genre1`, `genre2`, `genre3`) VALUES
+	(1, 'Titanic', '1997-12-19', 'James', 'Cameron', 21, NULL, NULL, NULL),
 	(2, 'The Shawshank Redemption', '1994-09-23', 'Frank', 'Darabont', 3, 4, 5, 11),
 	(3, 'Inception', '2010-07-16', 'Christopher', 'Nolan', 4, 1, 7, 6),
 	(4, 'Parasite', '2019-05-30', 'Bong', 'Joon-ho', 18, 3, 11, 6),
@@ -44,7 +44,7 @@ INSERT INTO `movie` (`movie_id`, `movie_name`, `movie_date`, `movie_directorFnam
 	(27, 'La La Land', '2016-12-09', 'Damien', 'Chazelle', 3, 13, 4, 3);
 
 -- Listage des données de la table cms_bdd.posts : ~32 rows (environ)
-INSERT INTO `posts` (`posts_id`, `comment`, `rate`, `title`, `author`, `movie_id`) VALUES
+REPLACE INTO `posts` (`posts_id`, `comment`, `rate`, `title`, `author`, `movie_id`) VALUES
 	(1, 'Le début est prometteur, mais la fin m’a un peu déçu.', 6, 'Fin prévisible', '3', 0),
 	(2, 'Excellente ambiance, des personnages attachants et une bande‑son superbe.', 8, 'Ambiance réussie', '1', 0),
 	(4, 'Le récit se déroule trop lentement, on perd l’attention avant la résolution.', 5, 'Manque de rythme', '21', 1),
@@ -78,8 +78,8 @@ INSERT INTO `posts` (`posts_id`, `comment`, `rate`, `title`, `author`, `movie_id
 	(32, 'Acteurs charismatiques, mais le scénario manque d’ambition.', 6, 'Charisme seul', '2', 10),
 	(33, 'Un chef‑d’œuvre moderne, chaque plan est une œuvre d’art.', 10, 'Chef‑d’œuvre', '18', 3);
 
--- Listage des données de la table cms_bdd.users : ~7 rows (environ)
-INSERT INTO `users` (`users_id`, `users_fname`, `users_lname`, `users_email`, `users_password`) VALUES
+-- Listage des données de la table cms_bdd.users : ~8 rows (environ)
+REPLACE INTO `users` (`users_id`, `users_fname`, `users_lname`, `users_email`, `users_password`) VALUES
 	(1, 'Marie', 'Dupont', 'marie.dupont@example.com', '1234'),
 	(2, 'Alice', 'Martin', 'alice.martin@example.com', '$argon2i$v=19$m=65536,t=4,p=1$ZlVsMTNKMmZybXh1enA5WA$HuWsGudiIOag/TtwTfloYJ+UQGkNERjc1NT3Wn3IeRI'),
 	(3, 'John', 'Doe', 'john.doe@example.com', '$argon2i$v=19$m=65536,t=4,p=1$MDZ2RVA3azcxcFYxOWdjNQ$ZzbOXHI2/2g8Nh1b+F2sFyCzJ8qQ77pdEAct4oeq0GA'),

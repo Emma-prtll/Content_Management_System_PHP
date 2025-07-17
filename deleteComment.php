@@ -42,7 +42,7 @@ if($_SESSION["user"]["id"] ===  (int)$post->author) {
     $req->execute();
 
     //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
-    $message = urlencode("Vous avez supprimez votre commentaire.");
+    $message = urlencode("Vous avez supprimé votre commentaire.");
     header("Location: movie.php?id=" . $post->movie_id . "&message=" . $message);
     
 } else {

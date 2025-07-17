@@ -43,7 +43,7 @@ if($_SESSION["user"]["id"] === $movie->movieUser_id) {
     $req->execute();
 
     //On redirige l'utilisateur vers la page de blog et on passe un message à blog.php
-    $message = urlencode("Vous avez supprimez la fiche du film : " . $movieName);
+    $message = urlencode("Vous avez supprimé la fiche du film : " . $movieName);
     header("Location: blog.php?message=".$message);
     
 } else {

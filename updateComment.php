@@ -56,7 +56,7 @@ if($_SESSION["user"]["id"] === (int)$post->author) {
 
             // $movieId = 
             //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
-            $message = urlencode("Vous avez modifier votre commentaire");
+            $message = urlencode("Vous avez modifié votre commentaire");
             header("Location: movie.php?id=" . $post->movie_id . "&message=" . $message);
 
         }
