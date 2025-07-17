@@ -85,9 +85,9 @@ REPLACE INTO `users` (`users_id`, `users_fname`, `users_lname`, `users_email`, `
 	(3, 'John', 'Doe', 'john.doe@example.com', '$argon2i$v=19$m=65536,t=4,p=1$MDZ2RVA3azcxcFYxOWdjNQ$ZzbOXHI2/2g8Nh1b+F2sFyCzJ8qQ77pdEAct4oeq0GA'),
 	(4, 'Chloé', 'Bernard', 'chloe.bernard@example.com', '$argon2i$v=19$m=65536,t=4,p=1$RE5tNXppODNmSGYwTmY4bQ$lcDvZ24oCqIkieKDLYemck08p4/p0ibIdOEK+SKmZv0'),
 	(17, 'Julien', 'Moreau', 'julien.moreau@gmail.com', '$argon2i$v=19$m=65536,t=4,p=1$aU5oaENVUFRWR3pvVzE2bQ$lK8UVgKu5qCITJ7bEwdFsJsSQCV7/BGOHqg3TnoiafY'),
-	(18, 'Maroussia', 'Schaffner', 'maroussia.schaffner@bluewin.ch', '$argon2i$v=19$m=65536,t=4,p=1$WFAyczhkbzdFYjJXc1NmbA$0QtPE7OIvCd5PXwpdlFxkjHqzKH02zV47BJxKWKEE0I'),
+	(18, 'Marta', 'Schaf', 'maroussia.schaffner@bluewin.ch', '$argon2i$v=19$m=65536,t=4,p=1$WFAyczhkbzdFYjJXc1NmbA$0QtPE7OIvCd5PXwpdlFxkjHqzKH02zV47BJxKWKEE0I'),
 	(20, 'Laura', 'Gauthier', 'laura.gauthier@example.com', '$argon2i$v=19$m=65536,t=4,p=1$dFAydDFuNWluQW9XMFd4Mw$HPDo1G6LeJoZvJVrB/tDak4fOX2VSudmeGVGtCAlrlA'),
-	(21, 'Emma', 'Portillo', 'emma.portillo03@gmail.com', '$argon2i$v=19$m=65536,t=4,p=1$NWVYLm1GTFBkQjRjTU1EMA$gdLnfBdZ5vLuHwo+a7gI0T4a7wxlHjliz7EVskQHLYc');
+	(21, 'Emma', 'Portillo', 'emma.portillo@gmail.com', '$argon2i$v=19$m=65536,t=4,p=1$NWVYLm1GTFBkQjRjTU1EMA$gdLnfBdZ5vLuHwo+a7gI0T4a7wxlHjliz7EVskQHLYc');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
