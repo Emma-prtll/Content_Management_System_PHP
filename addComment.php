@@ -35,7 +35,7 @@ if(!empty($_POST)) {
         require_once "db.php";
 
         //Requête SQL préparée car ces données viennent du user
-        $sql = "INSERT INTO `posts` (`comment`, `rate`, `title`, `author`, `movie_id`) VALUES (:comment, :rate, :title, :author, :movie_id)";
+        $sql = "INSERT INTO `posts` (`posts_comment`, `posts_rate`, `posts_title`, `posts_author`, `posts_movie_id`) VALUES (:comment, :rate, :title, :author, :movie_id)";
         //On prépare la requête
         $req = $db->prepare($sql);
         //On bind les values

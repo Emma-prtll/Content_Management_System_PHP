@@ -37,7 +37,7 @@ if(!empty($_POST)){
 
         //On vérifie que le mot de passe correspond à la confirmation de mot de passe
         if($_POST["password"] != $_POST["passwordConf"]) {
-            $messageErreur = "Les mots de passe ne correspondent pas.";
+            $messageErreur = "Les mots de passes ne correspondent pas.";
             //Ici, il y a une erreur donc $erreur devient true
             $erreur = true;
         }

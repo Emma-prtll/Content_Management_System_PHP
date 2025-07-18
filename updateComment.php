@@ -25,7 +25,7 @@ $req->execute();
 $post = $req->fetch();
 
 //On vérifie si l'article appartient à l'utilisateur
-if($_SESSION["user"]["id"] === (int)$post->author) {
+if($_SESSION["user"]["id"] === (int)$post->posts_author) {
 
     //Ici, l'article appartient bien au user, on peut traiter le formulaire
     if(!empty($_POST)) {
@@ -40,7 +40,7 @@ if($_SESSION["user"]["id"] === (int)$post->author) {
 
             //Ici, on peut enregistrer les données
             //Requête SQL préparée car ces données viennent du user
-            $sql = "UPDATE posts SET title = :title, comment = :content, rate = :rate  WHERE posts_id = :id";
+            $sql = "UPDATE posts SET posts_title = :title, posts_comment = :content, posts_rate = :rate  WHERE posts_id = :id";
             $req = $db->prepare($sql);
 
             $req->bindValue(":title", $postTitle, PDO::PARAM_STR);
@@ -57,7 +57,7 @@ if($_SESSION["user"]["id"] === (int)$post->author) {
             // $movieId = 
             //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
             $message = urlencode("Vous avez modifié votre commentaire");
-            header("Location: movie.php?id=" . $post->movie_id . "&message=" . $message);
+            header("Location: movie.php?id=" . $post->posts_movie_id . "&message=" . $message);
 
         }
     }
@@ -66,7 +66,7 @@ if($_SESSION["user"]["id"] === (int)$post->author) {
     header("Location: index.php?id=" .$id);
 }
 
-$title = "$post->title";
+$title = "$post->posts_title";
 //Integration des du header et de la navbar à la page
 include "components/header.php";
 include "components/nav.php";
@@ -79,24 +79,24 @@ include "components/nav.php";
         <div class="field">
             <label for="title" class="label">Titre</label>
             <div class="control">
-                <textarea name="title" class="textarea"><?= $post->title ?></textarea>
+                <textarea name="title" class="textarea"><?= $post->posts_title ?></textarea>
             </div>
         </div>
         <div class="field">
             <label for="content" class="label">Contenu</label>
             <div class="control">
-                <textarea name="content" class="textarea"><?= $post->comment ?></textarea>
+                <textarea name="content" class="textarea"><?= $post->posts_comment ?></textarea>
             </div>
         </div>
         <div class="field">
             <label for="rate" class="label">Note</label>
             <div class="control">
-                <input type="number" id="rate" name="rate" min="0" max="10" value="<?= $post->rate ?>"/>            
+                <input type="number" id="rate" name="rate" min="0" max="10" value="<?= $post->posts_rate ?>"/>            
             </div>
         </div>
         <div class="control">
             <button class="button is-link" type="submit">Modifier mon post</button>
-            <a class="button is-danger is-light ml-5" href="movie.php?id=<?= $post->movie_id ?>"><strong>Annuler</strong> </a>
+            <a class="button is-danger is-light ml-5" href="movie.php?id=<?= $post->posts_movie_id ?>"><strong>Annuler</strong> </a>
         </div>
     </form>
 </section>

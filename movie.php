@@ -24,7 +24,7 @@ $req->execute();
 $movie = $req->fetch();
 
 //On prépare la requête pour récupérer le post
-$sql = "SELECT * FROM `posts` WHERE `movie_id` = ?";
+$sql = "SELECT * FROM `posts` WHERE `posts_movie_id` = ?";
 $req = $db->prepare($sql);
 $req->bindValue(1, $id, PDO::PARAM_INT);
 $req->execute();
@@ -44,7 +44,7 @@ $req->execute($genre_ids);
 $genres = $req->fetchAll(PDO::FETCH_OBJ);
 
 //Selectionner et calculer la moyenne des notes et le nombre de note donnée au film
-$sql = "SELECT AVG(rate) AS average_rate, COUNT(rate) AS rate_count FROM posts WHERE movie_id = ?";
+$sql = "SELECT AVG(posts_rate) AS average_rate, COUNT(posts_rate) AS rate_count FROM posts WHERE posts_movie_id = ?";
 $req = $db->prepare($sql);
 $req->bindValue(1, $id, PDO::PARAM_INT);
 $req->execute();
@@ -138,24 +138,24 @@ include "components/nav.php";
     <div class="card m-4" style="width: 60%">
         <header class="card-header">
             <div class="card-header-title is-flex-direction-column is-align-item-flex-start">
-                <h4 class="title is-3"><?= strip_tags($post->title) ?></h4>
+                <h4 class="title is-3"><?= strip_tags($post->posts_title) ?></h4>
             </div>
         </header>
         <div class="card-content">
             <div class="content">
-                <p><strong><?= $post->rate ?>/10</strong></p>
-                <p><?= $post->comment ?></p>
+                <p><strong><?= $post->posts_rate ?>/10</strong></p>
+                <p><?= $post->posts_comment ?></p>
             </div>
         </div>
         <div class="card-content">
             <div class="content">
-                <?php $author =  getAuthor($post->author, $db)?>
+                <?php $author =  getAuthor($post->posts_author, $db)?>
                 <p>Auteur.trice :<i> <?= $author->users_fname . " " . $author->users_lname ?></i></p>
             </div>
         </div> 
         <footer class="card-footer">
             <!-- Si la session de l'utilisateur est ouverte et que le commentaire lui appartient, on affiche les boutons "modifier" et "supprmer" -->
-            <?php  if (isset($_SESSION["user"]) && (int)$_SESSION["user"]["id"] === (int)$post->author):?>
+            <?php  if (isset($_SESSION["user"]) && (int)$_SESSION["user"]["id"] === (int)$post->posts_author):?>
                 <a href="updateComment.php?id=<?= $post->posts_id?>" class="button is-warning is-light card-footer-item">Modifier</a>
                 <a href="deleteComment.php?id=<?= $post->posts_id?>" class="button is-danger is-light card-footer-item">Supprimer</a>
             <!-- Sinon, on affiche rien -->

@@ -34,7 +34,7 @@ if(!$post) {
 }
 
 //On vérifie que l'article appartienne au user
-if($_SESSION["user"]["id"] ===  (int)$post->author) {
+if($_SESSION["user"]["id"] ===  (int)$post->posts_author) {
     //Ici, le user à le droit de supprimer l'article car il lui appartient
     $sql = "DELETE FROM posts WHERE posts_id = :id";
     $req = $db->prepare($sql);
@@ -43,7 +43,7 @@ if($_SESSION["user"]["id"] ===  (int)$post->author) {
 
     //On redirige l'utilisateur vers la page du film et on passe un message a movie.php
     $message = urlencode("Vous avez supprimé votre commentaire.");
-    header("Location: movie.php?id=" . $post->movie_id . "&message=" . $message);
+    header("Location: movie.php?id=" . $post->posts_movie_id . "&message=" . $message);
     
 } else {
     //Ici, l'article n'appartient pas au user connecté, on le redirige donc sur la page blog
