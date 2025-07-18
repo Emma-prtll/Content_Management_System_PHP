@@ -44,7 +44,7 @@ REPLACE INTO `movie` (`movie_id`, `movie_name`, `movie_date`, `movie_directorFna
 	(27, 'La La Land', '2016-12-09', 'Damien', 'Chazelle', 3, 13, 4, 3);
 
 -- Listage des données de la table cms_bdd.posts : ~32 rows (environ)
-REPLACE INTO `posts` (`posts_id`, `comment`, `rate`, `title`, `author`, `movie_id`) VALUES
+REPLACE INTO `posts` (`posts_id`, `posts_comment`, `posts_rate`, `posts_title`, `posts_author`, `posts_movie_id`) VALUES
 	(1, 'Le début est prometteur, mais la fin m’a un peu déçu.', 6, 'Fin prévisible', '3', 0),
 	(2, 'Excellente ambiance, des personnages attachants et une bande‑son superbe.', 8, 'Ambiance réussie', '1', 0),
 	(4, 'Le récit se déroule trop lentement, on perd l’attention avant la résolution.', 5, 'Manque de rythme', '21', 1),
